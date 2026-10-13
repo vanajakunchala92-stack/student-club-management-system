@@ -1,0 +1,3811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Club Management System</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f8ff;
+    color:#172554;
+}
+
+header{
+    background:#0d47a1;
+    color:white;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+header h1{
+    font-size:23px;
+}
+
+button{
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.login-box{
+    width:400px;
+    max-width:92%;
+    margin:70px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px #cbd5e1;
+}
+
+.login-box h2{
+    text-align:center;
+    color:#0d47a1;
+    margin-bottom:20px;
+}
+
+.role-buttons{
+    display:flex;
+    gap:7px;
+    margin-bottom:20px;
+}
+
+.role-buttons button{
+    flex:1;
+    font-size:12px;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:11px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    margin:7px 0 14px;
+}
+
+.login-btn{
+    width:100%;
+}
+
+.dashboard{
+    display:none;
+}
+
+.sidebar{
+    position:fixed;
+    top:67px;
+    left:0;
+    width:230px;
+    height:calc(100vh - 67px);
+    background:#0d47a1;
+    padding:20px 12px;
+}
+
+.sidebar button{
+    width:100%;
+    text-align:left;
+    margin-bottom:10px;
+    background:#1565c0;
+}
+
+.main{
+    margin-left:230px;
+    padding:30px;
+}
+
+.card-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-top:25px;
+}
+
+.card{
+    background:white;
+    padding:22px;
+    border-radius:13px;
+    box-shadow:0 3px 15px #dbeafe;
+}
+
+.card h3{
+    color:#0d47a1;
+    margin-bottom:10px;
+}
+
+.card p{
+    margin:7px 0;
+}
+
+.card button{
+    margin-top:12px;
+}
+
+.form-box{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    max-width:800px;
+    box-shadow:0 3px 15px #dbeafe;
+    margin-top:20px;
+}
+
+.form-box h2{
+    color:#0d47a1;
+    margin-bottom:15px;
+}
+
+.form-box h3{
+    margin-top:15px;
+    color:#1565c0;
+}
+
+.coordinator-box{
+    background:#eef6ff;
+    padding:15px;
+    border-radius:10px;
+    margin:15px 0;
+    border-left:4px solid #1565c0;
+}
+
+.event-card{
+    border-left:5px solid #1565c0;
+}
+
+.success{
+    background:#e8f5e9;
+    border:1px solid #81c784;
+    padding:25px;
+    border-radius:12px;
+    margin-top:20px;
+}
+
+.receipt{
+    background:white;
+    border:2px solid #1565c0;
+    padding:25px;
+    border-radius:12px;
+    max-width:650px;
+    margin-top:20px;
+}
+
+.receipt h2{
+    color:#0d47a1;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.receipt p{
+    padding:9px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.edit-box{
+    border:1px solid #bfdbfe;
+    padding:18px;
+    border-radius:10px;
+    margin-top:15px;
+    background:#f8fbff;
+}
+
+.hidden{
+    display:none;
+}
+
+@media(max-width:700px){
+    header{flex-direction:row;gap:10px;align-items:center;}
+    header h1{white-space:normal;line-height:1.25;padding-right:105px;}
+    .sidebar{position:fixed;top:74px;left:0;width:min(300px,82vw);height:calc(100vh - 74px);transform:translateX(-105%);transition:transform .25s ease;z-index:1000;overflow-y:auto;}
+    .sidebar.mobile-open{transform:translateX(0);}
+    .main{margin-left:0;padding:18px 12px;}
+    .dashboard-stats{grid-template-columns:1fr;}
+    .profile-card{flex-direction:column;text-align:center;}
+}
+
+/* ===== PROFESSIONAL UI ENHANCEMENTS ===== */
+.sidebar button.active{
+    background:white;
+    color:#0d47a1;
+}
+.dashboard-stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:18px;
+    margin-top:22px;
+}
+.stat-card{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 3px 15px #dbeafe;
+    border-left:5px solid #1565c0;
+}
+.stat-card .stat-icon{
+    font-size:30px;
+}
+.stat-card .stat-number{
+    font-size:30px;
+    font-weight:bold;
+    color:#0d47a1;
+    margin-top:7px;
+}
+.search-box{
+    max-width:600px;
+    margin:18px 0;
+}
+.search-box input{
+    margin:0;
+}
+.event-status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    background:#e8f5e9;
+    color:#2e7d32;
+    font-size:12px;
+    font-weight:bold;
+    margin-top:8px;
+}
+.profile-card{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    background:#eef6ff;
+    padding:20px;
+    border-radius:14px;
+    margin:15px 0 20px;
+}
+.profile-card .profile-avatar,
+.profile-card .profile-avatar-placeholder{
+    flex:none;
+    width:100px;
+    height:100px;
+    object-fit:cover;
+}
+@media(max-width:700px){
+    .profile-card{
+        flex-direction:column;
+        text-align:center;
+    }
+}
+
+.profile-avatar-wrap{
+    text-align:center;
+    margin:10px 0 22px;
+}
+.profile-avatar{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #1565c0;
+    background:#eef6ff;
+    display:inline-block;
+}
+.profile-avatar-placeholder{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    border:4px solid #1565c0;
+    background:#eef6ff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:52px;
+}
+.profile-photo-input{
+    margin:12px auto 0;
+    display:block;
+    max-width:320px;
+}
+.profile-photo-note{
+    color:#64748b;
+    font-size:13px;
+    margin-top:7px;
+}
+
+.profile-info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin-top:18px;
+}
+
+.profile-info-item{
+    background:#f8fbff;
+    border:1px solid #bfdbfe;
+    border-radius:10px;
+    padding:14px;
+}
+
+.profile-info-item span{
+    display:block;
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.profile-info-item strong{
+    color:#172554;
+}
+
+
+/* ===== FINAL TOUCHES ===== */
+body.dark-mode{background:#0f172a;color:#e2e8f0;}
+body.dark-mode .form-box, body.dark-mode .card, body.dark-mode .stat-card, body.dark-mode .login-box, body.dark-mode .profile-card, body.dark-mode .profile-info-item{background:#1e293b;color:#e2e8f0;box-shadow:0 3px 15px #020617;border-color:#334155;}
+body.dark-mode h2, body.dark-mode h3, body.dark-mode .stat-number{color:#bfdbfe;}
+body.dark-mode input, body.dark-mode select, body.dark-mode textarea{background:#0f172a;color:#e2e8f0;border-color:#475569;}
+body.dark-mode .profile-info-item strong{color:#e2e8f0;}
+.top-actions{display:flex;gap:8px;align-items:center;}
+.icon-btn{padding:9px 12px;font-size:16px;}
+.profile-round-btn{width:42px;height:42px;min-width:42px;padding:0!important;border-radius:50%!important;display:inline-flex;align-items:center;justify-content:center;font-size:21px!important;background:#e3f2fd!important;color:#0d47a1!important;border:2px solid #90caf9!important;box-shadow:0 2px 7px rgba(0,0,0,.15);}
+.profile-round-btn:hover{background:#bbdefb!important;transform:translateY(-1px);}
+.profile-round-btn:focus-visible{outline:3px solid #fbbf24;outline-offset:2px;}
+@media(max-width:700px){header h1{font-size:16px!important;}.top-actions{gap:5px;}.profile-round-btn{width:38px;height:38px;min-width:38px;font-size:19px!important;}.top-actions .icon-btn{padding:8px!important;}}
+.favorite-btn{background:#f8fafc;color:#64748b;margin-top:8px;}
+.favorite-btn.active{background:#fee2e2;color:#dc2626;}
+.notification{position:fixed;right:20px;bottom:20px;background:#0d47a1;color:white;padding:13px 18px;border-radius:10px;box-shadow:0 5px 20px #94a3b8;z-index:9999;animation:slideIn .25s ease;}
+@keyframes slideIn{from{transform:translateY(15px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media print{header,.sidebar,.top-actions,button{display:none!important}.main{margin:0!important;padding:0!important}.receipt{box-shadow:none!important;border:1px solid #000!important}}
+
+
+/* ===== FINAL POLISH ===== */
+.welcome-banner{
+    background:linear-gradient(135deg,#0d47a1,#1976d2);
+    color:white;
+    padding:24px;
+    border-radius:16px;
+    margin-bottom:20px;
+    box-shadow:0 6px 18px rgba(13,71,161,.20);
+}
+.welcome-banner h2{margin:0 0 6px;color:white}
+.welcome-banner p{margin:0;opacity:.92}
+.toolbar{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin:16px 0;
+}
+.toolbar input,.toolbar select{
+    margin:0;
+    flex:1;
+    min-width:180px;
+}
+.favorite-btn{
+    background:#fff0f4 !important;
+    color:#c2185b !important;
+    border:1px solid #f8bbd0 !important;
+}
+.favorite-btn.active{
+    background:#c2185b !important;
+    color:white !important;
+}
+.empty-state{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+}
+
+
+/* ===== V7 COMPLETE PLUS ===== */
+.settings-card{
+    max-width:760px;
+    margin:auto;
+}
+.setting-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:16px 0;
+    border-bottom:1px solid #e2e8f0;
+}
+.setting-row:last-child{border-bottom:0}
+.toggle{
+    width:52px;
+    height:28px;
+    border-radius:20px;
+    background:#cbd5e1;
+    cursor:pointer;
+    position:relative;
+}
+.toggle::after{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    top:3px;
+    left:4px;
+    border-radius:50%;
+    background:white;
+    transition:.2s;
+}
+.toggle.on{background:#1565c0}
+.toggle.on::after{left:26px}
+.progress-wrap{
+    background:#dbeafe;
+    border-radius:20px;
+    height:12px;
+    overflow:hidden;
+    margin-top:8px;
+}
+.progress-bar{
+    height:100%;
+    width:80%;
+    background:#1565c0;
+    border-radius:20px;
+}
+.achievement-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:16px;
+    margin-top:18px;
+}
+.achievement{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    text-align:center;
+    box-shadow:0 3px 14px #dbeafe;
+}
+.achievement-icon{font-size:40px}
+.notification{
+    padding:14px 16px;
+    background:#f8fafc;
+    border-left:4px solid #1565c0;
+    border-radius:8px;
+    margin:10px 0;
+}
+
+
+/* ===== V8 PREMIUM FEATURES ===== */
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+    margin-top:18px;
+}
+.calendar-day{
+    min-height:82px;
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:8px;
+}
+.calendar-head{
+    text-align:center;
+    font-weight:bold;
+    color:#475569;
+    padding:8px;
+}
+.calendar-event{
+    display:block;
+    margin-top:5px;
+    padding:4px 6px;
+    border-radius:6px;
+    background:#e8f1ff;
+    color:#0d47a1;
+    font-size:11px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+.notification-panel{
+    max-width:760px;
+    margin:auto;
+}
+.notification-item{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    padding:16px;
+    background:white;
+    border-radius:12px;
+    margin:10px 0;
+    box-shadow:0 2px 10px #dbeafe;
+}
+.notification-item .ni-icon{font-size:26px}
+.danger-btn{
+    background:#d32f2f !important;
+    color:white !important;
+}
+.password-box{
+    max-width:520px;
+    margin:20px auto 0;
+}
+@media(max-width:650px){
+    .calendar-grid{gap:4px}
+    .calendar-day{min-height:65px;padding:5px;font-size:12px}
+    .calendar-event{font-size:9px}
+}
+
+
+/* ===== V9 POLISHED UI ===== */
+.profile-hero{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#eaf3ff,#ffffff);
+    margin-bottom:20px;
+    box-shadow:0 5px 18px #dbeafe;
+}
+.profile-hero .hero-avatar{
+    width:112px;height:112px;border-radius:50%;
+    object-fit:cover;border:4px solid #1565c0;
+    background:#eef6ff;flex:none;
+}
+.profile-hero .hero-placeholder{
+    width:112px;height:112px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:4px solid #1565c0;background:#eef6ff;
+    font-size:45px;flex:none;
+}
+.profile-progress{
+    max-width:360px;margin-top:12px;
+}
+.activity-chart{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    align-items:end;
+    gap:14px;
+    height:190px;
+    padding:18px 10px 5px;
+}
+.chart-bar-wrap{text-align:center;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.chart-bar{
+    width:100%;min-height:8px;border-radius:8px 8px 3px 3px;
+    background:#1976d2;transition:.25s;
+}
+.chart-label{font-size:12px;margin-top:7px;color:#64748b}
+
+ .mobile-menu-btn{display:none;}
+@media(max-width:700px){
+    .mobile-menu-btn{display:block;position:fixed;top:12px;right:12px;z-index:1001;border:0;border-radius:10px;padding:10px 13px;background:#1565c0;color:white;box-shadow:0 3px 10px #94a3b8;}
+    .profile-hero{flex-direction:column;text-align:center}
+    .activity-chart{gap:8px}
+}
+
+
+/* ===== V10 STUDENT PERFORMANCES ===== */
+.performance-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:18px;
+    margin-top:18px;
+}
+.performance-card{
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 4px 16px #dbeafe;
+    transition:transform .2s, box-shadow .2s;
+}
+.performance-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 8px 22px #cbd5e1;
+}
+.performance-media{
+    height:150px;
+    background:#eaf3ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:58px;
+}
+.performance-body{padding:17px}
+.performance-body h3{margin-bottom:7px}
+.performance-tag{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:15px;
+    background:#e8f1ff;
+    color:#0d47a1;
+    font-size:11px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+
+/* ===== PERFORMANCE EDIT ===== */
+.performance-edit-form{
+    max-width:520px;
+    margin:20px auto;
+}
+.performance-edit-form input,
+.performance-edit-form select{
+    width:100%;
+}
+.edit-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+
+/* ===== V12 PERFORMANCE COMPLETE ===== */
+.performance-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.performance-actions button{margin:0}
+.like-btn{background:#fff0f4!important;color:#c2185b!important;border:1px solid #f8bbd0!important}
+.like-btn.liked{background:#c2185b!important;color:white!important}
+.details-panel{max-width:650px;margin:20px auto}
+.media-note{font-size:12px;color:#64748b;margin-top:5px}
+
+
+/* ===== V13 COMPETITIONS ===== */
+.competition-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+.competition-card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 16px #dbeafe;transition:.2s}
+.competition-card:hover{transform:translateY(-4px)}
+.comp-badge{display:inline-block;padding:5px 10px;border-radius:15px;background:#fff3cd;color:#8a6100;font-size:11px;font-weight:bold}
+.comp-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.comp-actions button{margin:0}
+.result-card{max-width:700px;margin:20px auto}
+
+
+/* Dashboard layout styled to match the user's reference screenshot */
+header{background:#164da5;padding:8px 22px;min-height:74px;}
+header h1{font-size:clamp(19px,3vw,34px);white-space:nowrap;}
+.sidebar{top:74px;width: min(370px, 52vw);height:calc(100vh - 74px);background:#164da5;padding:22px 19px;overflow-y:auto;}
+.sidebar button{display:block;background:#216bc1;border-radius:11px;padding:17px 20px;margin-bottom:14px;font-size:17px;min-height:58px;color:#fff;}
+.sidebar button:hover,.sidebar button.active{background:#2c75c9;color:#fff;}
+.main{margin-left:min(370px,52vw);padding:28px 24px;min-width:0;}
+.main .form-box{max-width:none;padding:28px 26px;border-radius:22px;background:#fff;box-shadow:0 6px 25px #dce9fa;}
+.dashboard-stats{grid-template-columns:repeat(2,minmax(160px,1fr));gap:18px;}
+.stat-card{padding:22px 26px;border-radius:24px;border-left:7px solid #216bc1;min-height:150px;}
+.card-container{grid-template-columns:1fr;}
+.card{padding:28px;border-radius:22px;box-shadow:0 6px 25px #dce9fa;}
+@media(max-width:700px){
+  header{padding:8px 12px;min-height:74px;flex-direction:row;align-items:center;}
+  header h1{font-size:18px;white-space:normal;line-height:1.2;padding-right:90px;}
+  .top-actions{display:none;}
+  .sidebar{top:74px;left:0;width:min(300px,82vw);height:calc(100vh - 74px);padding:18px 12px;transform:translateX(-105%);transition:transform .25s ease;z-index:1000;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  .sidebar button{padding:13px 12px;font-size:15px;min-height:48px;}
+  .main{margin-left:0 !important;padding:18px 12px;width:100%;}
+  .main .form-box{padding:20px 16px;}
+  .dashboard-stats{grid-template-columns:1fr;}
+  .stat-card{padding:20px;}
+}
+
+</style>
+<style>
+/* Sidebar navigation refinement */
+.sidebar button{ text-align:left; padding:13px 16px; margin:3px 0; border-radius:8px; }
+.sidebar button:focus{ outline:2px solid #90caf9; }
+.section-subtitle{color:#64748b;margin:-8px 0 18px;}
+</style>
+<style id="mobile-menu-visibility-fix">
+/* Keep the mobile menu control visible above dashboard content */
+.mobile-menu-btn { display: none !important; }
+@media (max-width: 700px) {
+  .mobile-menu-btn {
+    display: block !important;
+    position: fixed !important;
+    top: 84px !important;
+    right: 12px !important;
+    z-index: 99999 !important;
+    width: auto !important;
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+    color: #fff !important;
+    background: #1565c0 !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 3px 12px rgba(0,0,0,.25) !important;
+  }
+  .sidebar { position: fixed !important; }
+  .sidebar:not(.mobile-open) { transform: translateX(-105%) !important; }
+  .sidebar.mobile-open { transform: translateX(0) !important; }
+}
+
+.calendar-nav{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px 0;}
+.field-note{font-size:12px;color:#64748b;margin:0 0 8px;}
+.calendar-nav b{min-width:150px;text-align:center;}
+.calendar-empty{min-height:1px;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎓 Student Club Management System</h1>
+<div class="top-actions">
+<button class="icon-btn" onclick="toggleDarkMode()" title="Toggle theme">🌙</button>
+<button class="icon-btn" onclick="showNotifications()" title="Notifications">🔔</button>
+<button class="profile-round-btn" onclick="showProfile(); closeMobileMenu()" title="My Profile" aria-label="My Profile">👤</button>
+<button onclick="logout()">Logout</button>
+</div>
+</header>
+
+<!-- REGISTRATION FIRST -->
+<div id="registerPage" class="login-box">
+<h2>📝 Student Registration</h2>
+<p style="text-align:center;color:#64748b;margin-bottom:16px;">Create your account first to continue</p>
+<input type="text" id="regName" placeholder="Full Name">
+<input type="text" id="regUsername" placeholder="Create Username">
+<input type="email" id="regEmail" placeholder="Email Address">
+<input type="tel" id="regPhone" placeholder="Phone Number">
+<input type="password" id="regPassword" placeholder="Create Password">
+<input type="password" id="regConfirmPassword" placeholder="Confirm Password">
+<button class="login-btn" onclick="registerAccount()">Register</button>
+<p id="registerMessage" style="color:#dc2626;text-align:center;margin-top:12px;"></p>
+<p style="text-align:center;margin-top:14px;">Already registered? <a href="#" onclick="showLoginPage();return false;">Login</a></p>
+</div>
+
+<!-- LOGIN AFTER REGISTRATION -->
+<div id="loginPage" class="login-box" style="display:none;">
+
+<h2>Login</h2>
+
+<div class="role-buttons">
+<button onclick="setRole('Student')">Student</button>
+<button onclick="setRole('Admin')">Admin</button>
+<button onclick="setRole('Coordinator')">Coordinator</button>
+</div>
+
+<input type="text" id="username" placeholder="Enter Username">
+
+<input type="password" id="password" placeholder="Enter Password">
+
+<button class="login-btn" onclick="login()">Login</button>
+
+<p style="font-size:12px;color:#64748b;text-align:center;margin-top:10px;">Use the account credentials registered in the SCEM database.</p>
+<p id="loginMessage"
+style="color:red;text-align:center;margin-top:12px;"></p>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="dashboard">
+
+
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">☰ Menu</button>
+<div class="sidebar">
+<button onclick="showHome(); closeMobileMenu()">🏠 Dashboard</button>
+<button onclick="showClubs(); closeMobileMenu()">🏫 Clubs</button>
+<button onclick="showEvents(); closeMobileMenu()">📅 Events</button>
+<button onclick="showPerformances(); closeMobileMenu()">🏃 Student Performances</button>
+<button onclick="showRegistrations(); closeMobileMenu()">📝 My Registrations</button>
+<button onclick="showCalendar(); closeMobileMenu()">📅 Event Calendar</button>
+<button onclick="showAchievements(); closeMobileMenu()">🏆 Achievements</button>
+<button onclick="showCompetitions(); closeMobileMenu()">🥇 Competitions</button>
+<button onclick="showSettings(); closeMobileMenu()">⚙️ Settings</button>
+<button id="manageButton" onclick="manageClubs()">⚙️ Manage Clubs</button>
+<button id="manageStallButton" onclick="manageStalls()">🏪 Manage Stalls</button>
+<!-- My Profile is available from the round header icon -->
+<button onclick="logout()">🚪 Logout</button>
+</div>
+
+<div class="main">
+
+<div id="content"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   CLUB DATA
+========================= */
+
+const defaultClubs = [
+
+{
+name:"Sports Club",
+icon:"🏆",
+
+studentCoordinator:"Sports Student Coordinator",
+staffCoordinator:"Sports Staff Coordinator",
+
+events:[
+
+{
+name:"Cricket",
+date:"20 September 2026",
+time:"10:00 AM",
+venue:"College Ground"
+},
+
+{
+name:"Badminton",
+date:"21 September 2026",
+time:"10:00 AM",
+venue:"Indoor Stadium"
+},
+
+{
+name:"Volleyball",
+date:"22 September 2026",
+time:"10:00 AM",
+venue:"Volleyball Court"
+},
+
+{
+name:"Chess",
+date:"23 September 2026",
+time:"10:00 AM",
+venue:"Seminar Hall"
+},
+
+{
+name:"Kho-Kho",
+date:"24 September 2026",
+time:"10:00 AM",
+venue:"College Ground"
+},
+
+{
+name:"Carrom",
+date:"25 September 2026",
+time:"10:00 AM",
+venue:"Indoor Hall"
+}
+
+]
+},
+
+{
+name:"Technical Club",
+icon:"💻",
+
+studentCoordinator:"Technical Student Coordinator",
+staffCoordinator:"Technical Staff Coordinator",
+
+events:[
+
+{
+name:"Coding Competition",
+date:"26 September 2026",
+time:"10:00 AM",
+venue:"Computer Lab"
+},
+
+{
+name:"Technical Quiz",
+date:"27 September 2026",
+time:"11:00 AM",
+venue:"Seminar Hall"
+},
+
+{
+name:"PPT Presentation",
+date:"28 September 2026",
+time:"10:00 AM",
+venue:"Seminar Hall"
+}
+
+]
+},
+
+{
+name:"Cultural Club",
+icon:"🎭",
+
+studentCoordinator:"Cultural Student Coordinator",
+staffCoordinator:"Cultural Staff Coordinator",
+
+events:[
+
+{
+name:"Dance Competition",
+date:"29 September 2026",
+time:"10:00 AM",
+venue:"Auditorium"
+},
+
+{
+name:"Singing Competition",
+date:"30 September 2026",
+time:"10:00 AM",
+venue:"Auditorium"
+},
+
+{
+name:"Drama",
+date:"1 October 2026",
+time:"10:00 AM",
+venue:"Auditorium"
+}
+
+]
+},
+
+{
+name:"Literary Club",
+icon:"📚",
+
+studentCoordinator:"Literary Student Coordinator",
+staffCoordinator:"Literary Staff Coordinator",
+
+events:[
+
+{
+name:"Essay Writing",
+date:"2 October 2026",
+time:"10:00 AM",
+venue:"Seminar Hall"
+},
+
+{
+name:"Debate Competition",
+date:"3 October 2026",
+time:"10:00 AM",
+venue:"Seminar Hall"
+},
+
+{
+name:"Poster Presentation",
+date:"4 October 2026",
+time:"10:00 AM",
+venue:"Seminar Hall"
+}
+
+]
+}
+
+];
+
+
+/* =========================
+   STALL DATA
+========================= */
+
+const defaultStalls = {
+
+studentCoordinator:"Stalls Student Coordinator",
+
+staffCoordinator:"Stalls Staff Coordinator",
+
+stalls:[
+
+{
+name:"Food Stall",
+icon:"🍔",
+location:"Block A"
+},
+
+{
+name:"Art & Craft Stall",
+icon:"🎨",
+location:"Block B"
+},
+
+{
+name:"Games Stall",
+icon:"🎮",
+location:"Block C"
+},
+
+{
+name:"Refreshments Stall",
+icon:"☕",
+location:"Block D"
+}
+
+]
+
+};
+
+
+/* =========================
+   LOAD DATA
+========================= */
+
+let clubs =
+JSON.parse(localStorage.getItem("clubsData"));
+
+if(!clubs){
+
+clubs=JSON.parse(
+JSON.stringify(defaultClubs)
+);
+/* Frontend-only: registration data is saved in this browser. */
+localStorage.setItem(
+"clubsData",
+JSON.stringify(clubs)
+);
+
+}
+
+
+let stallData =
+JSON.parse(localStorage.getItem("stallData"));
+
+if(!stallData){
+
+stallData=JSON.parse(
+JSON.stringify(defaultStalls)
+);
+
+localStorage.setItem(
+"stallData",
+JSON.stringify(stallData)
+);
+
+}
+
+
+let currentRole="";
+let currentUsername="";
+
+let selectedClub=null;
+
+let selectedEvent=null;
+
+
+/* =========================
+   SAVE
+========================= */
+
+async function saveSharedState(key, value){
+  if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return false; }
+  try{
+    const response=await fetch("/api/state",{method:"PUT",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({key,value})});
+    const result=await response.json();
+    if(!response.ok || !result.success) throw new Error(result.message || "Save failed.");
+    localStorage.setItem(key==="clubs" ? "clubsData" : "stallData",JSON.stringify(value));
+    showToast("Saved for all computers");
+    return true;
+  }catch(error){ alert("Could not save shared data: "+error.message); return false; }
+}
+function saveClubs(){
+  if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+  localStorage.setItem("clubsData",JSON.stringify(clubs));
+  saveSharedState("clubs",clubs);
+}
+function saveStalls(){
+  if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+  localStorage.setItem("stallData",JSON.stringify(stallData));
+  saveSharedState("stalls",stallData);
+}
+
+async function loadSharedData(){
+  try{
+    const response=await fetch("/api/state",{credentials:"same-origin"});
+    const result=await response.json();
+    if(!response.ok || !result.success) throw new Error(result.message || "Could not load shared data.");
+    if(Array.isArray(result.state.clubs)){
+      clubs=result.state.clubs;
+      localStorage.setItem("clubsData",JSON.stringify(clubs));
+    }else if(currentRole==="Admin"){
+      await saveSharedState("clubs",clubs);
+    }else{
+      clubs=JSON.parse(JSON.stringify(defaultClubs));
+    }
+    if(result.state.stalls && Array.isArray(result.state.stalls.stalls)){
+      stallData=result.state.stalls;
+      localStorage.setItem("stallData",JSON.stringify(stallData));
+    }else if(currentRole==="Admin"){
+      await saveSharedState("stalls",stallData);
+    }else{
+      stallData=JSON.parse(JSON.stringify(defaultStalls));
+    }
+  }catch(error){
+    console.error("Shared data load failed:",error);
+    alert("Could not load shared data from MySQL. Check the server/database and sign in again.");
+  }
+}
+async function refreshRegistrations(){
+  const response=await fetch("/api/registrations",{credentials:"same-origin"});
+  const result=await response.json();
+  if(!response.ok || !result.success) throw new Error(result.message || "Could not load registrations.");
+  localStorage.setItem("registrations",JSON.stringify(result.registrations || []));
+  return result.registrations || [];
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function getAccounts(){
+  // Keep only non-sensitive profile cache data in this browser. Authentication is server-side.
+  let accounts={};
+  try { accounts=JSON.parse(localStorage.getItem("scemAccounts") || "{}"); } catch(e) { accounts={}; }
+  if(!accounts || typeof accounts!=="object" || Array.isArray(accounts)) accounts={};
+  let changed=false;
+  Object.values(accounts).forEach(account=>{
+    if(account && Object.prototype.hasOwnProperty.call(account,"password")){
+      delete account.password;
+      changed=true;
+    }
+  });
+  if(changed) localStorage.setItem("scemAccounts",JSON.stringify(accounts));
+  return accounts;
+}
+function setAccounts(accounts){ localStorage.setItem("scemAccounts",JSON.stringify(accounts)); }
+function getCurrentAccount(){
+  const accounts=getAccounts();
+  const key=Object.keys(accounts).find(k=>k.toLowerCase()===String(currentUsername||"").toLowerCase());
+  return key ? accounts[key] : null;
+}
+async function registerAccount(){
+  const name=document.getElementById("regName").value.trim();
+  const username=document.getElementById("regUsername").value.trim();
+  const email=document.getElementById("regEmail").value.trim();
+  const phone=document.getElementById("regPhone").value.trim();
+  const password=document.getElementById("regPassword").value;
+  const confirmPassword=document.getElementById("regConfirmPassword").value;
+  const msg=document.getElementById("registerMessage");
+  const fail=(message)=>{msg.style.color="#dc2626";msg.innerText=message;};
+  if(!name || !username || !email || !phone || !password || !confirmPassword){fail("Please fill in all fields.");return;}
+  if(!/^[A-Za-z0-9_.-]{3,30}$/.test(username)){fail("Username must be 3–30 characters and use letters, numbers, dots, underscores or hyphens.");return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){fail("Please enter a valid email address.");return;}
+  const digits=phone.replace(/\D/g,"");
+  if(digits.length!==10 && !(digits.length===12 && digits.startsWith("91"))){fail("Please enter a valid 10-digit phone number (or +91 followed by 10 digits).");return;}
+  if(password.length<8){fail("Password must contain at least 8 characters.");return;}
+  if(password.length>72){fail("Password must be 72 characters or fewer.");return;}
+  if(password!==confirmPassword){fail("Passwords do not match.");return;}
+  const button=document.querySelector('#registerPage button[onclick="registerAccount()"]');
+  if(button){button.disabled=true;button.textContent="Registering...";}
+  try{
+    const response=await fetch("/api/register",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      credentials:"same-origin",
+      body:JSON.stringify({name,username,email,phone,password})
+    });
+    const result=await response.json();
+    if(!response.ok || !result.success){fail(result.message || "Registration failed.");return;}
+    document.getElementById("username").value=username;
+    document.getElementById("password").value="";
+    document.getElementById("regPassword").value="";
+    document.getElementById("regConfirmPassword").value="";
+    document.getElementById("registerPage").style.display="none";
+    document.getElementById("loginPage").style.display="block";
+    document.getElementById("loginMessage").style.color="#15803d";
+    document.getElementById("loginMessage").innerText=result.message || "Registration successful! Please login.";
+  }catch(error){
+    fail("Cannot reach the backend. Please open this page using http://localhost:3000 and make sure the server is running.");
+  }finally{
+    if(button){button.disabled=false;button.textContent="Register";}
+  }
+}
+
+function showLoginPage(){
+  document.getElementById("registerPage").style.display="none";
+  document.getElementById("loginPage").style.display="block";
+  document.getElementById("loginMessage").innerText="";
+}
+
+function setRole(role){
+
+currentRole=role;
+
+document.getElementById(
+"loginMessage"
+).innerText=
+"Selected Role: "+role;
+
+}
+
+
+async function login(){
+  const username=document.getElementById("username").value.trim();
+  const password=document.getElementById("password").value;
+  const message=document.getElementById("loginMessage");
+  if(username==="" || password===""){
+    message.innerText="Please enter username and password.";
+    return;
+  }
+  if(currentRole===""){
+    message.innerText="Please select a role.";
+    return;
+  }
+  const button=document.querySelector('#loginPage button[onclick="login()"]');
+  if(button){button.disabled=true;button.textContent="Logging in...";}
+  try{
+    const response=await fetch("/api/login",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      credentials:"same-origin",
+      body:JSON.stringify({username,password,role:currentRole})
+    });
+    const result=await response.json();
+    if(!response.ok || !result.success){message.innerText=result.message || "Login failed.";return;}
+    const account=result.user;
+    currentUsername=account.username;
+    currentRole=account.role;
+    const accounts=getAccounts();
+    accounts[currentUsername]={name:account.name,email:account.email,phone:account.phone || "",role:account.role};
+    setAccounts(accounts);
+    localStorage.setItem("profileName",account.name || "");
+    localStorage.setItem("profileEmail",account.email || "");
+    localStorage.setItem("profilePhone",account.phone || "");
+    localStorage.setItem("profileDepartment",account.department || "");
+    localStorage.setItem("profileYear",account.year || "");
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("registerPage").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+    document.getElementById("manageButton").style.display=currentRole==="Admin" ? "block" : "none";
+    document.getElementById("manageStallButton").style.display=currentRole==="Admin" ? "block" : "none";
+    await loadSharedData();
+    try{ await refreshRegistrations(); }catch(e){ console.error(e); }
+    showHome();
+  }catch(error){
+    message.innerText="Cannot reach the backend. Open http://localhost:3000 and make sure the server is running.";
+  }finally{
+    if(button){button.disabled=false;button.textContent="Login";}
+  }
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+  try{await fetch("/api/logout",{method:"POST",credentials:"same-origin"});}catch(error){}
+  currentRole="";
+  currentUsername="";
+  selectedClub=null;
+  selectedEvent=null;
+  document.getElementById("dashboard").style.display="none";
+  document.getElementById("loginPage").style.display="block";
+  document.getElementById("registerPage").style.display="none";
+  document.getElementById("username").value="";
+  document.getElementById("password").value="";
+  document.getElementById("loginMessage").innerText="You have logged out.";
+}
+
+
+/* =========================
+   PARTICIPATION PROGRESS (ADMIN)
+========================= */
+function getParticipationProgressHTML(){
+    const registrations = JSON.parse(localStorage.getItem("registrations") || "[]");
+    const completed = registrations.filter(r => r.participationCompleted === true).length;
+    const overall = registrations.length ? Math.round((completed / registrations.length) * 100) : 0;
+    const eventNames = [...new Set([
+        ...clubs.flatMap(club => (club.events || []).map(event => event.name)),
+        ...registrations.map(reg => reg.event).filter(Boolean)
+    ])];
+
+    let eventCards = eventNames.map(eventName => {
+        const eventRegs = registrations.filter(reg => reg.event === eventName);
+        const eventCompleted = eventRegs.filter(reg => reg.participationCompleted === true).length;
+        const percent = eventRegs.length ? Math.round((eventCompleted / eventRegs.length) * 100) : 0;
+        const participantRows = eventRegs.length ? eventRegs.map(reg => {
+            const regIndex = registrations.indexOf(reg);
+            return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #e2e8f0;flex-wrap:wrap;">
+                <span><b>${reg.studentName || "Student"}</b><br><small>${reg.id || "Registration"} · ${reg.participationCompleted ? "Completed" : "Pending"}</small></span>
+                <button class="${reg.participationCompleted ? "secondary-btn" : ""}" onclick="toggleParticipationStatus(${regIndex})" style="width:auto;padding:8px 12px;">${reg.participationCompleted ? "Undo completion" : "Mark completed"}</button>
+            </div>`;
+        }).join("") : `<p style="color:#64748b;margin-top:10px;">No registrations yet.</p>`;
+        return `<div class="card" style="min-width:260px;flex:1;">
+            <h3>🎯 ${eventName}</h3>
+            <p style="margin:10px 0;color:#475569;">Registrations: <b>${eventRegs.length}</b> · Completed: <b>${eventCompleted}</b></p>
+            <div style="height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden;"><div style="height:100%;width:${percent}%;background:#16a34a;border-radius:20px;"></div></div>
+            <p style="text-align:right;font-weight:bold;margin-top:6px;">${percent}% complete</p>
+            <div style="margin-top:10px;">${participantRows}</div>
+        </div>`;
+    }).join("");
+
+    return `<div class="form-box" style="margin-top:22px;">
+        <h2>📊 Fest Participation Progress</h2>
+        <p style="color:#64748b;margin:8px 0 16px;">Progress increases only when Admin marks a registered student as having completed participation.</p>
+        <div class="card" style="margin-bottom:18px;">
+            <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;">
+                <div><h3>Overall Fest Progress</h3><p style="color:#64748b;margin-top:6px;">${completed} completed out of ${registrations.length} registrations</p></div>
+                <strong style="font-size:28px;color:#15803d;">${overall}%</strong>
+            </div>
+            <div style="height:12px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin-top:12px;"><div style="height:100%;width:${overall}%;background:#16a34a;border-radius:20px;"></div></div>
+        </div>
+        <h3 style="margin:12px 0;">Event-wise Progress</h3>
+        <div class="card-container">${eventCards || "<p>No events available.</p>"}</div>
+    </div>`;
+}
+
+function toggleParticipationStatus(registrationIndex){
+    if(currentRole !== "Admin"){
+        alert("Only Admin can update participation status.");
+        return;
+    }
+    const registrations = JSON.parse(localStorage.getItem("registrations") || "[]");
+    if(!registrations[registrationIndex]) return;
+    registrations[registrationIndex].participationCompleted = registrations[registrationIndex].participationCompleted !== true;
+    localStorage.setItem("registrations", JSON.stringify(registrations));
+    const changed=registrations[registrationIndex];
+    fetch(`/api/registrations/${encodeURIComponent(changed.id)}/completion`,{method:"PATCH",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({completed:changed.participationCompleted})}).then(r=>r.json()).then(result=>{if(!result.success) alert(result.message || "Could not save participation status.");}).catch(()=>alert("Could not save participation status to MySQL."));
+    showHome();
+}
+
+/* =========================
+   HOME
+========================= */
+
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    if (!sidebar) return;
+
+    const isOpen = sidebar.classList.toggle('mobile-open');
+    if (menuBtn) menuBtn.textContent = isOpen ? '✕ Close Menu' : '☰ Menu';
+}
+
+function closeMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (menuBtn) menuBtn.textContent = '☰ Menu';
+}
+
+function showHome(){
+
+let totalClubs=clubs.length;
+
+let totalEvents=clubs.reduce(
+    (total,club)=>total+club.events.length,
+    0
+);
+
+let totalStalls=stallData.stalls.length;
+
+document.getElementById("content").innerHTML=`
+
+<div class="form-box">
+
+<h2>Welcome to Student Club Management System</h2>
+
+<p style="margin-top:10px;">
+Logged in as:
+<b>${currentRole}</b>
+</p>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="stat-icon">🏫</div>
+        <div>Clubs</div>
+        <div class="stat-number">${totalClubs}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div>Events</div>
+        <div class="stat-number">${totalEvents}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🏪</div>
+        <div>Stalls</div>
+        <div class="stat-number">${totalStalls}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div>My Registrations</div>
+        <div class="stat-number">${JSON.parse(localStorage.getItem("registrations") || "[]").length}</div>
+    </div>
+</div>
+
+<div class="card-container">
+
+    <div class="card">
+        <h3>🏫 Total Clubs</h3>
+        <p style="font-size:30px;font-weight:bold;color:#0d47a1;">
+            ${totalClubs}
+        </p>
+        <button onclick="showClubs()">View Clubs</button>
+    </div>
+
+    <div class="card">
+        <h3>🎯 Total Events</h3>
+        <p style="font-size:30px;font-weight:bold;color:#0d47a1;">
+            ${totalEvents}
+        </p>
+        <button onclick="showClubs()">View Events</button>
+    </div>
+
+    <div class="card">
+        <h3>🏪 Total Stalls</h3>
+        <p style="font-size:30px;font-weight:bold;color:#0d47a1;">
+            ${totalStalls}
+        </p>
+        <button onclick="showStalls()">View Stalls</button>
+    </div>
+
+</div>
+
+${currentRole === "Admin" ? getParticipationProgressHTML() : ""}
+
+<p style="margin-top:22px;">
+Use the menu to explore Clubs, Stalls and your Profile.
+</p>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   ALL EVENTS
+========================= */
+function showEvents(){
+  document.getElementById("content").innerHTML=`<div class="form-box events-page"><h2>📅 All Events</h2><p class="section-subtitle">Search events, add favorites, or register.</p><div class="toolbar"><input id="eventSearch" type="search" placeholder="🔍 Search events..." oninput="filterEvents()"><select id="eventFilter" onchange="filterEvents()"><option value="all">All events</option><option value="upcoming">Upcoming</option><option value="favorites">Favorites</option></select></div><div class="card-container" id="eventsContainer"></div></div>`;
+  filterEvents();
+}
+
+/* =========================
+   CLUBS
+========================= */
+
+function showClubs(){
+
+let html=`
+
+<h2>College Clubs</h2>
+
+<div class="search-box">
+    <input id="clubSearch" type="text" placeholder="🔍 Search clubs..." oninput="filterClubs()">
+</div>
+
+<div class="card-container" id="clubsContainer">
+
+`;
+
+clubs.forEach((club,index)=>{
+
+html+=`
+
+<div class="card">
+
+<h3>
+${club.icon} ${club.name}
+</h3>
+
+<p>
+Student Coordinator:
+<b>${club.studentCoordinator}</b>
+</p>
+
+<p>
+Staff Coordinator:
+<b>${club.staffCoordinator}</b>
+</p>
+
+<button onclick="openClub(${index})">
+View Club
+</button>
+<button class="favorite-btn ${isFavorite(index) ? "active" : ""}" onclick="toggleFavorite(${index})">
+${isFavorite(index) ? "❤️ Favorited" : "♡ Add Favorite"}
+</button>
+
+</div>
+
+`;
+
+});
+
+html+=`
+
+</div>
+`;
+
+document.getElementById(
+"content"
+).innerHTML=html;
+
+}
+
+
+/* =========================
+   OPEN CLUB
+========================= */
+
+function openClub(index){
+
+selectedClub=index;
+
+let club=clubs[index];
+
+let editButton="";
+
+if(currentRole==="Admin"){
+
+editButton=`
+
+<button onclick="editCoordinators(${index})">
+✏️ Edit Coordinators
+</button>
+
+`;
+
+}
+
+
+let html=`
+
+<div class="form-box">
+
+<h2>
+${club.icon} ${club.name}
+</h2>
+
+<div class="coordinator-box">
+
+<p>
+👩‍🎓 <b>Student Coordinator:</b>
+${club.studentCoordinator}
+</p>
+
+<p>
+👨‍🏫 <b>Staff Coordinator:</b>
+${club.staffCoordinator}
+</p>
+
+</div>
+
+${editButton}
+
+<h3>Events</h3>
+
+<div class="card-container">
+
+`;
+
+club.events.forEach((event,index2)=>{
+
+html+=`
+
+<div class="card event-card">
+
+<h3>${event.name}</h3>
+
+<p>📅 ${event.date}</p>
+
+<p>⏰ ${event.time}</p>
+
+<p>📍 ${event.venue}</p>
+<span class="event-status">Upcoming</span>
+
+<button onclick="selectedClub=${index}; selectedEvent=${index2}; registrationForm()">
+📝 Register for ${event.name}
+</button>
+<button onclick="openEvent(${index2})" style="background:#64748b;margin-top:8px;">
+View Details
+</button>
+
+</div>
+
+`;
+
+});
+
+html+=`
+
+</div>
+
+</div>
+
+`;
+
+document.getElementById(
+"content"
+).innerHTML=html;
+
+}
+
+
+/* =========================
+   EDIT CLUB COORDINATORS
+========================= */
+
+function editCoordinators(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+
+let club=clubs[index];
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="form-box">
+
+<h2>✏️ Edit Club Coordinators</h2>
+
+<h3>${club.name}</h3>
+
+<label>Student Coordinator</label>
+
+<input
+id="clubStudentCoordinator"
+value="${club.studentCoordinator}"
+>
+
+<label>Staff Coordinator</label>
+
+<input
+id="clubStaffCoordinator"
+value="${club.staffCoordinator}"
+>
+
+<button onclick="saveCoordinator(${index})">
+💾 Save Changes
+</button>
+
+</div>
+
+`;
+
+}
+
+
+function saveCoordinator(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+
+let student=
+document.getElementById(
+"clubStudentCoordinator"
+).value.trim();
+
+let staff=
+document.getElementById(
+"clubStaffCoordinator"
+).value.trim();
+
+if(student==="" || staff===""){
+
+alert("Please enter both coordinator names.");
+
+return;
+
+}
+
+clubs[index].studentCoordinator=student;
+
+clubs[index].staffCoordinator=staff;
+
+saveClubs();
+
+alert(
+"Club coordinator names updated successfully!"
+);
+
+openClub(index);
+
+}
+
+
+/* =========================
+   EVENT
+========================= */
+
+function openEvent(index){
+
+selectedEvent=index;
+
+let event=
+clubs[selectedClub].events[index];
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="form-box">
+
+<h2>${event.name}</h2>
+
+<p>📅 <b>Date:</b> ${event.date}</p>
+
+<p>⏰ <b>Time:</b> ${event.time}</p>
+
+<p>📍 <b>Venue:</b> ${event.venue}</p>
+
+<br>
+
+<button onclick="registrationForm()">
+📝 Register Now
+</button>
+
+<br><br>
+
+<button
+onclick="openClub(${selectedClub})"
+style="background:#64748b;"
+>
+Back
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   REGISTRATION
+========================= */
+
+function registrationForm(){
+
+if (selectedClub === null || selectedEvent === null || !clubs[selectedClub] || !clubs[selectedClub].events[selectedEvent]) {
+  alert("Please open Clubs, select a club, and then choose an event first.");
+  showClubs();
+  return;
+}
+
+let event=
+clubs[selectedClub].events[selectedEvent];
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="form-box">
+
+<h2>Event Registration</h2>
+
+<label>Student Name</label>
+
+<input
+id="studentName"
+placeholder="Enter student name"
+>
+
+<label>College Name</label>
+
+<input
+id="collegeName"
+placeholder="Enter college name"
+>
+
+<label>Student ID / Roll Number</label>
+
+<input
+id="studentId"
+placeholder="Enter ID / Roll Number"
+>
+
+<label>Department</label>
+
+<select id="department">
+
+<option value="">
+Select Department
+</option>
+
+<option>CSE</option>
+<option>ECE</option>
+<option>EEE</option>
+<option>Civil</option>
+<option>Mechanical</option>
+<option>Other</option>
+
+</select>
+
+<label>Year</label>
+
+<select id="year">
+
+<option value="">
+Select Year
+</option>
+
+<option>1st Year</option>
+<option>2nd Year</option>
+<option>3rd Year</option>
+<option>4th Year</option>
+
+</select>
+
+<label>Phone Number</label>
+
+<input
+id="phone"
+type="tel"
+placeholder="Enter phone number"
+>
+
+<label>Email ID</label>
+
+<input
+id="email"
+type="email"
+placeholder="Enter email"
+>
+
+<label>Gender</label>
+
+<select id="gender">
+
+<option value="">
+Select Gender
+</option>
+
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+
+</select>
+
+<label>Fest Event</label>
+
+<input value="${event.name}" readonly>
+
+<label>Event Date / Timing</label>
+
+<input
+value="${event.date} - ${event.time}"
+readonly
+>
+
+<label>Team Participation</label>
+
+<select
+id="participation"
+onchange="toggleTeam()"
+>
+
+<option value="">
+Select
+</option>
+
+<option>Individual</option>
+<option>Team</option>
+
+</select>
+
+<div id="teamBox" class="hidden">
+
+<label>Team Members</label>
+
+<textarea
+id="teamMembers"
+placeholder="Enter team member names"
+></textarea>
+
+</div>
+
+<label>Payment Status</label>
+<p class="field-note">Payment stays Pending until verified. Select Free only for a no-fee event.</p>
+<select id="paymentStatus">
+
+<option value="">
+Select Payment Status
+</option>
+
+<option>Pending</option>
+<option>Free</option>
+
+</select>
+
+<label>Payment Method</label>
+
+<select id="paymentMethod">
+
+<option value="">
+Select Payment Method
+</option>
+
+<option>UPI</option>
+<option>Cash</option>
+<option>Online</option>
+
+</select>
+
+<label>
+
+<input
+type="checkbox"
+id="terms"
+style="width:auto;"
+>
+
+I agree to the Terms & Conditions.
+
+</label>
+
+<br>
+
+<button onclick="submitRegistration()">
+Register Now
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   TEAM
+========================= */
+
+function toggleTeam(){
+
+let value=
+document.getElementById(
+"participation"
+).value;
+
+let box=
+document.getElementById("teamBox");
+
+if(value==="Team"){
+
+box.classList.remove("hidden");
+
+}else{
+
+box.classList.add("hidden");
+}
+
+}
+
+
+/* =========================
+   SUBMIT REGISTRATION
+========================= */
+
+async function submitRegistration(){
+if(currentRole!=="Student" || !currentUsername){alert("Please log in with a student account to register for events.");return;}
+
+let name=
+document.getElementById(
+"studentName"
+).value.trim();
+
+let college=
+document.getElementById(
+"collegeName"
+).value.trim();
+
+let studentId=
+document.getElementById(
+"studentId"
+).value.trim();
+
+let department=
+document.getElementById(
+"department"
+).value;
+
+let year=
+document.getElementById(
+"year"
+).value;
+
+let phone=
+document.getElementById(
+"phone"
+).value.trim();
+
+let email=
+document.getElementById(
+"email"
+).value.trim();
+
+let gender=
+document.getElementById(
+"gender"
+).value;
+
+let participation=
+document.getElementById(
+"participation"
+).value;
+
+let paymentStatus=
+document.getElementById(
+"paymentStatus"
+).value;
+
+let paymentMethod=
+document.getElementById(
+"paymentMethod"
+).value;
+
+let terms=
+document.getElementById(
+"terms"
+).checked;
+
+
+if(
+name==="" ||
+college==="" ||
+studentId==="" ||
+department==="" ||
+year==="" ||
+phone==="" ||
+email==="" ||
+gender==="" ||
+participation==="" ||
+paymentStatus==="" ||
+paymentMethod===""
+){
+
+alert("Please fill all required fields.");
+
+return;
+
+}
+
+
+let teamMembers="";
+if(participation==="Team"){
+  teamMembers=document.getElementById("teamMembers").value.trim();
+  if(teamMembers===""){alert("Please enter team members.");return;}
+}
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert("Please enter a valid email address.");return;}
+const phoneDigits=phone.replace(/\D/g,"");
+if(phoneDigits.length!==10 && !(phoneDigits.length===12 && phoneDigits.startsWith("91"))){alert("Please enter a valid 10-digit phone number (or +91 followed by 10 digits).");return;}
+if(!clubs[selectedClub] || !clubs[selectedClub].events || !clubs[selectedClub].events[selectedEvent]){alert("Please select a valid event and try again.");return;}
+try{
+  const existingRegistrations=await refreshRegistrations();
+  const duplicate=existingRegistrations.some(r=>r.registeredBy===currentUsername && r.event===clubs[selectedClub].events[selectedEvent].name && r.clubName===clubs[selectedClub].name);
+  if(duplicate){alert("You have already registered for this event.");return;}
+}catch(error){alert("Could not verify existing registrations. Please try again.");return;}
+
+
+if(!terms){
+
+alert(
+"Please accept Terms & Conditions."
+);
+
+return;
+
+}
+
+
+let event=
+clubs[selectedClub].events[selectedEvent];
+
+let registrationId=
+"REG"+Date.now().toString().slice(-6);
+
+
+let registration={
+
+id:registrationId,
+
+studentName:name,
+
+collegeName:college,
+
+studentId:studentId,
+
+department:department,
+
+year:year,
+
+phone:phone,
+
+email:email,
+
+gender:gender,
+
+event:event.name,
+clubName:clubs[selectedClub].name,
+
+date:event.date,
+
+time:event.time,
+
+venue:event.venue,
+
+participation:participation,
+
+paymentStatus:paymentStatus,
+
+paymentMethod:paymentMethod,
+teamMembers:teamMembers,
+registeredBy:currentRole==="Student" ? currentUsername : ""
+
+};
+try{
+  const response=await fetch("/api/registrations",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({registration})});
+  const result=await response.json();
+  if(!response.ok || !result.success){alert(result.message || "Registration could not be saved.");return;}
+  const savedRegistrations=JSON.parse(localStorage.getItem("registrations") || "[]");
+  savedRegistrations.unshift(result.registration || registration);
+  localStorage.setItem("registrations",JSON.stringify(savedRegistrations));
+}catch(error){alert("Could not save registration to MySQL. Check your connection and try again.");return;}
+
+localStorage.setItem(
+"lastRegistration",
+JSON.stringify(registration)
+);
+
+showReceipt(registration);
+
+}
+
+
+/* =========================
+   RECEIPT
+========================= */
+
+function showReceipt(data){
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="success">
+
+<h2>✅ Registration Successful!</h2>
+
+<p style="margin-top:10px;">
+Your registration has been completed successfully.
+</p>
+
+</div>
+
+<div class="receipt" id="receipt">
+
+<h2>🎓 Registration Receipt</h2>
+
+<p>
+<b>Student Name:</b>
+${data.studentName}
+</p>
+
+<p>
+<b>College Name:</b>
+${data.collegeName}
+</p>
+
+<p>
+<b>Student ID:</b>
+${data.studentId}
+</p>
+${data.participation === "Team" ? `<p><b>Team Members:</b> ${data.teamMembers || "—"}</p>` : ""}
+
+<p>
+<b>Department:</b>
+${data.department}
+</p>
+
+<p>
+<b>Year:</b>
+${data.year}
+</p>
+
+<p>
+<b>Event Name:</b>
+${data.event}
+</p>
+
+<p>
+<b>Event Date:</b>
+${data.date}
+</p>
+
+<p>
+<b>Event Time:</b>
+${data.time}
+</p>
+
+<p>
+<b>Venue:</b>
+${data.venue}
+</p>
+
+<p>
+<b>Participation:</b>
+${data.participation}
+</p>
+
+<p>
+<b>Payment Status:</b>
+${data.paymentStatus}
+</p>
+
+<p>
+<b>Payment Method:</b>
+${data.paymentMethod}
+</p>
+
+<p>
+<b>Registration ID:</b>
+${data.id}
+</p>
+
+</div>
+
+<br>
+
+<button onclick="downloadReceipt()">
+🖨️ Download Receipt
+</button>
+
+<button onclick="shareReceipt()">
+📤 Share Receipt
+</button>
+
+`;
+
+}
+
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+function downloadReceipt(){
+
+window.print();
+
+}
+
+
+/* =========================
+   SHARE
+========================= */
+
+function shareReceipt(){
+
+let data=
+JSON.parse(
+localStorage.getItem(
+"lastRegistration"
+)
+);
+
+let text=
+"Registration Successful\n"+
+"Student: "+data.studentName+"\n"+
+"College: "+data.collegeName+"\n"+
+"Event: "+data.event+"\n"+
+"Registration ID: "+data.id;
+
+
+if(navigator.share){
+
+navigator.share({
+
+title:"Event Registration Receipt",
+
+text:text
+
+});
+
+}else{
+
+navigator.clipboard.writeText(text);
+
+alert(
+"Receipt details copied."
+);
+
+}
+
+}
+
+
+/* =========================
+   STALLS PAGE
+========================= */
+
+function showStalls(){
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="form-box">
+
+<h2>🏪 Fest Stalls</h2>
+
+<div class="coordinator-box">
+
+<p>
+👩‍🎓 <b>Student Coordinator:</b>
+${stallData.studentCoordinator}
+</p>
+
+<p>
+👨‍🏫 <b>Staff Coordinator:</b>
+${stallData.staffCoordinator}
+</p>
+
+</div>
+
+<h3>Available Stalls</h3>
+
+<div class="card-container">
+
+${stallData.stalls.map(
+(stall,index)=>`
+
+<div class="card">
+
+<h3>
+${stall.icon} ${stall.name}
+</h3>
+
+<p>
+📍 Location:
+<b>${stall.location}</b>
+</p>
+
+<button onclick="viewStall(${index})">
+View Stall
+</button>
+
+</div>
+
+`
+).join("")}
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   VIEW STALL
+========================= */
+
+function viewStall(index){
+
+let stall=
+stallData.stalls[index];
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="form-box">
+
+<h2>
+${stall.icon} ${stall.name}
+</h2>
+
+<div class="coordinator-box">
+
+<p>
+👩‍🎓 <b>Student Coordinator:</b>
+${stallData.studentCoordinator}
+</p>
+
+<p>
+👨‍🏫 <b>Staff Coordinator:</b>
+${stallData.staffCoordinator}
+</p>
+
+</div>
+
+<p>
+📍 <b>Location:</b>
+${stall.location}
+</p>
+
+<br>
+
+<button onclick="showStalls()">
+Back to Stalls
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   MANAGE STALLS
+========================= */
+
+function manageStalls(){
+
+if(currentRole!=="Admin"){
+
+alert(
+"Only Admin can manage stalls."
+);
+
+return;
+
+}
+
+document.getElementById(
+"content"
+).innerHTML=`
+
+<div class="form-box">
+
+<h2>⚙️ Manage Fest Stalls</h2>
+
+<h3>Common Stall Coordinators</h3>
+
+<label>Student Coordinator</label>
+
+<input
+id="stallStudentCoordinator"
+value="${stallData.studentCoordinator}"
+>
+
+<label>Staff Coordinator</label>
+
+<input
+id="stallStaffCoordinator"
+value="${stallData.staffCoordinator}"
+>
+
+<button onclick="saveStallCoordinators()">
+💾 Save Stall Coordinators
+</button>
+
+<h3>Stalls</h3>
+
+`;
+
+let html="";
+
+stallData.stalls.forEach(
+(stall,index)=>{
+
+html+=`
+
+<div class="edit-box">
+
+<h3>
+${stall.icon} ${stall.name}
+</h3>
+
+<label>Location</label>
+
+<input
+id="stallLocation${index}"
+value="${stall.location}"
+>
+
+<button
+onclick="saveStallLocation(${index})"
+>
+💾 Save Location
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"content"
+).innerHTML+=html+`</div>`;
+
+}
+
+
+/* =========================
+   SAVE STALL COORDINATORS
+========================= */
+
+function saveStallCoordinators(){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+
+let student=
+document.getElementById(
+"stallStudentCoordinator"
+).value.trim();
+
+let staff=
+document.getElementById(
+"stallStaffCoordinator"
+).value.trim();
+
+if(student==="" || staff===""){
+
+alert("Please enter both names.");
+
+return;
+
+}
+
+stallData.studentCoordinator=student;
+
+stallData.staffCoordinator=staff;
+
+saveStalls();
+
+alert(
+"Stall coordinators updated successfully!"
+);
+
+manageStalls();
+
+}
+
+
+/* =========================
+   SAVE STALL LOCATION
+========================= */
+
+function saveStallLocation(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+
+let location=
+document.getElementById(
+"stallLocation"+index
+).value.trim();
+
+if(location===""){
+
+alert("Please enter stall location.");
+
+return;
+
+}
+
+stallData.stalls[index].location=
+location;
+
+saveStalls();
+
+alert(
+"Stall location updated successfully!"
+);
+
+manageStalls();
+
+}
+
+
+/* =========================
+   MANAGE CLUBS
+========================= */
+
+function manageClubs(){
+
+if(currentRole!=="Admin"){
+
+alert(
+"Only Admin can manage clubs."
+);
+
+return;
+
+}
+
+let html=`
+
+<h2>⚙️ Manage Clubs</h2>
+
+`;
+
+clubs.forEach(
+(club,index)=>{
+
+html+=`
+
+<div class="form-box">
+
+<h2>
+${club.icon} ${club.name}
+</h2>
+
+<div class="edit-box">
+
+<h3>Club Coordinators</h3>
+
+<label>Student Coordinator</label>
+
+<input
+id="manageStudent${index}"
+value="${club.studentCoordinator}"
+>
+
+<label>Staff Coordinator</label>
+
+<input
+id="manageStaff${index}"
+value="${club.staffCoordinator}"
+>
+
+<button onclick="saveManageCoordinator(${index})">
+💾 Save Coordinators
+</button>
+
+</div>
+
+<h3>Events</h3>
+
+`;
+
+club.events.forEach(
+(event,eventIndex)=>{
+
+html+=`
+
+<div class="edit-box">
+
+<label>Event Name</label>
+
+<input
+id="eventName${index}_${eventIndex}"
+value="${event.name}"
+>
+
+<label>Date</label>
+
+<input
+id="eventDate${index}_${eventIndex}"
+value="${event.date}"
+>
+
+<label>Time</label>
+
+<input
+id="eventTime${index}_${eventIndex}"
+value="${event.time}"
+>
+
+<label>Venue</label>
+
+<input
+id="eventVenue${index}_${eventIndex}"
+value="${event.venue}"
+>
+
+<button
+onclick="saveEvent(${index},${eventIndex})"
+>
+💾 Save Event
+</button>
+
+</div>
+
+`;
+
+});
+
+html+=`</div>`;
+
+});
+
+document.getElementById(
+"content"
+).innerHTML=html;
+
+}
+
+
+/* =========================
+   SAVE MANAGE COORDINATOR
+========================= */
+
+function saveManageCoordinator(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+
+let student=
+document.getElementById(
+"manageStudent"+index
+).value.trim();
+
+let staff=
+document.getElementById(
+"manageStaff"+index
+).value.trim();
+
+if(student==="" || staff===""){
+
+alert("Please enter both names.");
+
+return;
+
+}
+
+clubs[index].studentCoordinator=
+student;
+
+clubs[index].staffCoordinator=
+staff;
+
+saveClubs();
+
+alert(
+"Coordinator names saved successfully!"
+);
+
+manageClubs();
+
+}
+
+
+/* =========================
+   SAVE EVENT
+========================= */
+
+function saveEvent(
+clubIndex,
+eventIndex
+){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+
+let event=
+clubs[clubIndex].events[eventIndex];
+
+event.name=
+document.getElementById(
+"eventName"+
+clubIndex+
+"_"+eventIndex
+).value.trim();
+
+event.date=
+document.getElementById(
+"eventDate"+
+clubIndex+
+"_"+eventIndex
+).value.trim();
+
+event.time=
+document.getElementById(
+"eventTime"+
+clubIndex+
+"_"+eventIndex
+).value.trim();
+
+event.venue=
+document.getElementById(
+"eventVenue"+
+clubIndex+
+"_"+eventIndex
+).value.trim();
+
+saveClubs();
+
+alert(
+"Event updated successfully!"
+);
+
+manageClubs();
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function showToast(message){
+    let old=document.querySelector(".notification");
+    if(old) old.remove();
+    let n=document.createElement("div");
+    n.className="notification";
+    n.innerText="🔔 "+message;
+    document.body.appendChild(n);
+    setTimeout(()=>n.remove(),3000);
+}
+
+function syncThemeToggle(){
+    const toggle=document.getElementById("settingsThemeToggle");
+    if(toggle) toggle.classList.toggle("on",document.body.classList.contains("dark-mode"));
+}
+function toggleDarkMode(){
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode",document.body.classList.contains("dark-mode") ? "on" : "off");
+    syncThemeToggle();
+}
+function loadDarkMode(){
+    document.body.classList.toggle("dark-mode",localStorage.getItem("darkMode")==="on");
+}
+
+function getFavorites(){
+    return JSON.parse(localStorage.getItem("favoriteClubs") || "[]");
+}
+
+function isFavorite(index){
+    return getFavorites().includes(index);
+}
+
+function toggleFavorite(index){
+    let favorites=getFavorites();
+    if(favorites.includes(index)){
+        favorites=favorites.filter(i=>i!==index);
+        showToast("Removed from favorites");
+    }else{
+        favorites.push(index);
+        showToast("Club added to favorites");
+    }
+    localStorage.setItem("favoriteClubs",JSON.stringify(favorites));
+    showClubs();
+}
+
+function showNotifications(){
+    let registrations = JSON.parse(localStorage.getItem("registrations") || "[]");
+    let last = localStorage.getItem("lastNotification");
+
+    let items = [
+        {icon:"🎯", title:"Upcoming Events", text:"Check the Events section for the latest campus activities."},
+        {icon:"📝", title:"Registration Updates", text: registrations.length ? `You have ${registrations.length} registration(s) in your history.` : "No registrations yet."},
+        {icon:"👤", title:"Profile", text:"Keep your profile details and DP updated."}
+    ];
+
+    if(last) items.unshift({icon:"🔔", title:"Latest Update", text:last});
+
+    document.getElementById("content").innerHTML = `
+    <div class="form-box notification-panel">
+        <h2>🔔 Notifications</h2>
+        <p style="margin:8px 0 18px;">Stay updated with your student activities.</p>
+        ${items.map(n => `
+            <div class="notification-item">
+                <div class="ni-icon">${n.icon}</div>
+                <div><b>${n.title}</b><p style="margin-top:5px;">${n.text}</p></div>
+            </div>`).join("")}
+    </div>`;
+}
+
+
+function getAllEvents(){
+  const list=[];
+  (clubs || []).forEach((club,clubIndex)=>{
+    (club.events || []).forEach((event,eventIndex)=>list.push({...event,clubName:club.name,clubIcon:club.icon,clubIndex,eventIndex}));
+  });
+  return list;
+}
+function filterEvents(){
+  const container=document.getElementById("eventsContainer");
+  if(!container) return;
+  const search=(document.getElementById("eventSearch")?.value || "").trim().toLowerCase();
+  const filter=document.getElementById("eventFilter")?.value || "all";
+  const favorites=JSON.parse(localStorage.getItem("favoriteEvents") || "[]");
+  const filtered=getAllEvents().map((event,index)=>({...event,flatIndex:index})).filter(event=>{
+    const matchesSearch=JSON.stringify(event).toLowerCase().includes(search);
+    const parsedDate=parseEventDate(event.date);
+    const today=new Date(); today.setHours(0,0,0,0);
+    const isUpcoming=!parsedDate || parsedDate >= today;
+    const matchesFilter=filter==="all" || (filter==="upcoming" && isUpcoming) || (filter==="favorites" && favorites.includes(event.flatIndex));
+    return matchesSearch && matchesFilter;
+  });
+  if(!filtered.length){container.innerHTML=`<div class="empty-state"><h3>No events found</h3><p>Try another search or filter.</p></div>`;return;}
+  container.innerHTML=filtered.map(event=>{
+    const isFav=favorites.includes(event.flatIndex);
+    return `<div class="card event-card"><h3>${event.clubIcon || "🎯"} ${event.name || "College Event"}</h3><p><b>Club:</b> ${event.clubName}</p><p>📅 ${event.date || "Date to be announced"}</p><p>⏰ ${event.time || "Time to be announced"}</p><p>📍 ${event.venue || "Venue to be announced"}</p><button class="favorite-btn ${isFav ? "active" : ""}" onclick="toggleEventFavorite(${event.flatIndex})">${isFav ? "♥ Favorited" : "♡ Favorite"}</button><button onclick="selectedClub=${event.clubIndex};selectedEvent=${event.eventIndex};registrationForm()">Register for this event</button></div>`;
+  }).join("");
+}
+function toggleEventFavorite(index){
+  let favorites=JSON.parse(localStorage.getItem("favoriteEvents") || "[]");
+  favorites=favorites.includes(index) ? favorites.filter(i=>i!==index) : [...favorites,index];
+  localStorage.setItem("favoriteEvents",JSON.stringify(favorites));
+  filterEvents();
+}
+
+function filterClubs(){
+    let search = document.getElementById("clubSearch").value.toLowerCase();
+    let container = document.getElementById("clubsContainer");
+
+    let filtered = clubs.filter(club =>
+        club.name.toLowerCase().includes(search)
+    );
+
+    container.innerHTML = filtered.map((club) => {
+        let originalIndex = clubs.indexOf(club);
+        return `
+        <div class="card">
+            <h3>${club.icon} ${club.name}</h3>
+            <p>Student Coordinator: <b>${club.studentCoordinator}</b></p>
+            <p>Staff Coordinator: <b>${club.staffCoordinator}</b></p>
+            <button onclick="openClub(${originalIndex})">View Club</button>
+            <button class="favorite-btn ${isFavorite(originalIndex) ? "active" : ""}" onclick="toggleFavorite(${originalIndex})">${isFavorite(originalIndex) ? "❤️ Favorited" : "♡ Add Favorite"}</button>
+        </div>`;
+    }).join("");
+
+    if(filtered.length === 0){
+        container.innerHTML = `<div class="card"><h3>No clubs found</h3><p>Try another search.</p></div>`;
+    }
+}
+
+async function showRegistrations(){
+    let allRegistrations = [];
+    try{ allRegistrations=await refreshRegistrations(); }catch(error){ alert(error.message); return; }
+    const isAdmin = currentRole === "Admin";
+    // Server enforces role-based filtering: Admin gets all, Student gets own, Coordinator gets assigned clubs.
+    const registrations = allRegistrations;
+
+    let html = `
+    <div class="form-box">
+        <h2>📝 ${isAdmin ? "All Student Registrations" : "My Registrations"}</h2>
+        <p style="margin-top:8px;">${isAdmin ? "Review registrations submitted by students on any connected computer." : "Only registrations for clubs assigned to your coordinator account are shown here."}</p>
+        <div class="card-container">
+    `;
+
+    if(registrations.length === 0){
+        html += `
+            <div class="card">
+                <h3>No registrations yet</h3>
+                <p>${isAdmin ? "No student event registrations have been saved yet." : "Register for an event while logged in to your student account to see it here."}</p>
+            </div>`;
+    }else{
+        registrations.slice().reverse().forEach(reg => {
+            html += `
+            <div class="card event-card">
+                <h3>🎯 ${reg.event || "Event"}</h3>
+                <p>👤 ${reg.studentName || "Student"}</p>
+                ${isAdmin ? `<p><b>Student ID:</b> ${reg.studentId || "—"}</p><p><b>Account:</b> ${reg.registeredBy || "Legacy/unlinked registration"}</p>` : ""}
+                <p>📅 ${reg.date || "—"}</p>
+                <p>⏰ ${reg.time || "—"}</p>
+                <p>📍 ${reg.venue || "—"}</p>
+                <p>💳 ${reg.paymentStatus || "—"}</p>
+                ${reg.participation === "Team" ? `<p><b>Team Members:</b> ${reg.teamMembers || "—"}</p>` : ""}
+                <p><b>Registration ID:</b> ${reg.id || "—"}</p>
+            </div>`;
+        });
+    }
+
+    html += `</div></div>`;
+    document.getElementById("content").innerHTML = html;
+}
+
+
+
+let calendarMonthOffset=0;
+function parseEventDate(value){
+  if(!value) return null;
+  const text=String(value).trim();
+  const m=text.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if(m){const monthIndex=new Date(`${m[2]} 1, ${m[3]}`).getMonth();const date=new Date(Number(m[3]),monthIndex,Number(m[1]));return Number.isNaN(date.getTime())?null:date;}
+  const date=new Date(text);
+  return Number.isNaN(date.getTime())?null:date;
+}
+function showCalendar(offset){
+  if(offset===undefined) calendarMonthOffset=0;
+  else if(Number.isFinite(offset)) calendarMonthOffset=offset;
+  const today=new Date();
+  const target=new Date(today.getFullYear(),today.getMonth()+calendarMonthOffset,1);
+  const year=target.getFullYear(), month=target.getMonth();
+  const monthName=target.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+  const days=new Date(year,month+1,0).getDate();
+  const firstDay=new Date(year,month,1).getDay();
+  const allEvents=getAllEvents().map(e=>({...e,parsedDate:parseEventDate(e.date)}));
+  let cells=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<div class="calendar-head">${d}</div>`).join("");
+  for(let i=0;i<firstDay;i++) cells+="<div class=\"calendar-empty\"></div>";
+  for(let day=1;day<=days;day++){
+    const dayEvents=allEvents.filter(e=>e.parsedDate && e.parsedDate.getFullYear()===year && e.parsedDate.getMonth()===month && e.parsedDate.getDate()===day);
+    cells+=`<div class="calendar-day"><b>${day}</b>${dayEvents.map(e=>`<span class="calendar-event" title="${e.name || "Event"}">${e.name || "Event"}</span>`).join("")}</div>`;
+  }
+  document.getElementById("content").innerHTML=`<div class="form-box"><h2>📅 Event Calendar</h2><div class="calendar-nav"><button onclick="showCalendar(${calendarMonthOffset-1})">← Previous</button><b>${monthName}</b><button onclick="showCalendar(${calendarMonthOffset+1})">Next →</button><button onclick="showCalendar(0)">This month</button></div><div class="calendar-grid">${cells}</div></div>`;
+}
+
+function showChangePassword(){
+    document.getElementById("content").innerHTML = `
+    <div class="form-box password-box">
+        <h2>🔐 Change Password</h2>
+        <input type="password" id="oldPassword" placeholder="Current password">
+        <input type="password" id="newPassword" placeholder="New password">
+        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+        <button onclick="saveNewPassword()">Update Password</button>
+    </div>`;
+}
+
+async function saveNewPassword(){
+    const oldPass=document.getElementById("oldPassword").value;
+    const newPass=document.getElementById("newPassword").value;
+    const confirm=document.getElementById("confirmPassword").value;
+    if(!oldPass || !newPass || !confirm){showToast("Please fill in all password fields");return;}
+    if(newPass.length<8){showToast("New password must contain at least 8 characters");return;}
+    if(newPass!==confirm){showToast("Passwords do not match");return;}
+    if(newPass===oldPass){showToast("Choose a password different from your current password");return;}
+    try{
+      const response=await fetch("/api/change-password",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"same-origin",
+        body:JSON.stringify({currentPassword:oldPass,newPassword:newPass})
+      });
+      const result=await response.json();
+      if(!response.ok || !result.success){showToast(result.message || "Could not update password");return;}
+      localStorage.setItem("lastNotification","Your password was updated successfully.");
+      showToast("Password updated successfully");
+      showSettings();
+    }catch(error){showToast("Cannot reach backend. Please try again.");}
+}
+
+
+
+function updateActivityChart(){
+    let registrations = JSON.parse(localStorage.getItem("registrations") || "[]");
+    let values = [registrations.length, registrations.length ? 1 : 0, registrations.length > 1 ? 2 : 0, 0, 0];
+    let labels = ["Registrations","Clubs","Events","Stalls","Awards"];
+    let max = Math.max(...values, 1);
+
+    let chart = document.getElementById("activityChart");
+    if(!chart) return;
+
+    chart.innerHTML = values.map((v,i) => `
+        <div class="chart-bar-wrap">
+            <b>${v}</b>
+            <div class="chart-bar" style="height:${Math.max(8,(v/max)*125)}px"></div>
+            <div class="chart-label">${labels[i]}</div>
+        </div>
+    `).join("");
+}
+
+function globalSearchItems(){
+    let input = document.getElementById("globalSearch");
+    if(!input) return;
+    let q = input.value.trim().toLowerCase();
+
+    if(!q) return;
+
+    let clubMatch = (typeof clubs !== "undefined") &&
+        clubs.some(c => JSON.stringify(c).toLowerCase().includes(q));
+    let eventMatch = typeof getAllEvents === "function" &&
+        getAllEvents().some(e => JSON.stringify(e).toLowerCase().includes(q));
+
+    if(clubMatch && typeof showClubs === "function"){
+        showClubs();
+        setTimeout(() => {
+            let clubSearch = document.getElementById("clubSearch");
+            if(clubSearch){ clubSearch.value = q; filterClubs(); }
+        }, 0);
+    }else if(eventMatch && typeof showEvents === "function"){
+        showEvents();
+        setTimeout(() => {
+            let eventSearch = document.getElementById("eventSearch");
+            if(eventSearch){ eventSearch.value = q; filterEvents(); }
+        }, 0);
+    }else{
+        showToast("No matching club or event found");
+    }
+}
+
+
+
+
+function getCompetitions(){
+    const defaults = [
+        {name:"Inter-College Dance Competition", category:"Dance", date:"September 20, 2026", venue:"Main Auditorium", status:"Registration Open", participants:12},
+        {name:"Singing Star", category:"Music", date:"September 21, 2026", venue:"Seminar Hall", status:"Registration Open", participants:8},
+        {name:"Photography Challenge", category:"Photography", date:"September 22, 2026", venue:"Campus", status:"Coming Soon", participants:5},
+        {name:"Quiz Championship", category:"Quiz", date:"September 23, 2026", venue:"Block A", status:"Registration Open", participants:20}
+    ];
+    let saved = localStorage.getItem("competitions");
+    if(!saved){
+        localStorage.setItem("competitions", JSON.stringify(defaults));
+        return defaults;
+    }
+    try{return JSON.parse(saved)}catch(e){return defaults}
+}
+
+function showCompetitions(){
+    const competitions = getCompetitions();
+    document.getElementById("content").innerHTML = `
+    <div class="form-box">
+        <h2>🏅 Competitions</h2>
+        <p style="margin-top:8px;">Manage extra-curricular competitions and student participation.</p>
+        <div class="toolbar">
+            <input id="competitionSearch" placeholder="🔍 Search competitions..." oninput="filterCompetitions()">
+            <button onclick="addCompetition()">➕ Add Competition</button>
+        </div>
+        <div class="competition-grid" id="competitionGrid">
+        ${competitions.map((c,i)=>`
+            <div class="competition-card" data-search="${(c.name+" "+c.category+" "+c.venue).toLowerCase()}">
+                <span class="comp-badge">${c.status}</span>
+                <h3 style="margin-top:10px;">${c.name}</h3>
+                <p>🎭 ${c.category}</p>
+                <p>📅 ${c.date}</p>
+                <p>📍 ${c.venue}</p>
+                <p>👥 ${c.participants} registered</p>
+                <div class="comp-actions">
+                    <button onclick="registerCompetition(${i})">📝 Register</button>
+                    <button onclick="viewCompetition(${i})">👁️ Details</button>
+                    <button onclick="editCompetition(${i})">✏️ Edit</button>
+                    <button class="danger-btn" onclick="deleteCompetition(${i})">🗑️ Delete</button>
+                </div>
+            </div>`).join("")}
+        </div>
+    </div>`;
+}
+
+function filterCompetitions(){
+    const q=(document.getElementById("competitionSearch")?.value||"").toLowerCase();
+    document.querySelectorAll(".competition-card").forEach(c=>{
+        c.style.display=c.dataset.search.includes(q)?"":"none";
+    });
+}
+
+function registerCompetition(index){
+    const competitions=getCompetitions();
+    if(competitions[index].status!=="Registration Open"){
+        showToast("Registration is not open yet");
+        return;
+    }
+    let registrations=JSON.parse(localStorage.getItem("competitionRegistrations")||"[]");
+    const exists=registrations.some(r=>r.competition===competitions[index].name);
+    if(exists){showToast("Already registered for this competition");return;}
+    registrations.push({competition:competitions[index].name,date:new Date().toLocaleString(),status:"Pending"});
+    competitions[index].participants++;
+    localStorage.setItem("competitionRegistrations",JSON.stringify(registrations));
+    localStorage.setItem("competitions",JSON.stringify(competitions));
+    localStorage.setItem("lastNotification",`Registration submitted for ${competitions[index].name}.`);
+    showToast("Competition registration submitted");
+    showCompetitions();
+}
+
+function viewCompetition(index){
+    const c=getCompetitions()[index];
+    document.getElementById("content").innerHTML=`
+    <div class="form-box result-card">
+        <h2>🏅 ${c.name}</h2>
+        <div class="card" style="margin-top:18px;">
+            <p><b>Category:</b> ${c.category}</p>
+            <p><b>Date:</b> ${c.date}</p>
+            <p><b>Venue:</b> ${c.venue}</p>
+            <p><b>Status:</b> ${c.status}</p>
+            <p><b>Participants:</b> ${c.participants}</p>
+        </div>
+        <div class="comp-actions">
+            <button onclick="registerCompetition(${index})">📝 Register</button>
+            <button onclick="showCompetitions()">↩️ Back</button>
+        </div>
+    </div>`;
+}
+
+function addCompetition(){
+    document.getElementById("content").innerHTML=`
+    <div class="form-box performance-edit-form">
+        <h2>➕ Add Competition</h2>
+        <input id="newCompName" placeholder="Competition name">
+        <input id="newCompCategory" placeholder="Category">
+        <input id="newCompDate" placeholder="Date">
+        <input id="newCompVenue" placeholder="Venue">
+        <select id="newCompStatus"><option>Registration Open</option><option>Coming Soon</option></select>
+        <div class="edit-actions">
+            <button onclick="saveCompetition()">💾 Save</button>
+            <button onclick="showCompetitions()">↩️ Cancel</button>
+        </div>
+    </div>`;
+}
+
+function saveCompetition(){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+    const c=getCompetitions();
+    const name=document.getElementById("newCompName").value.trim();
+    const category=document.getElementById("newCompCategory").value.trim();
+    const date=document.getElementById("newCompDate").value.trim();
+    const venue=document.getElementById("newCompVenue").value.trim();
+    const status=document.getElementById("newCompStatus").value;
+    if(!name||!category||!date||!venue){showToast("Please fill all details");return}
+    c.push({name,category,date,venue,status,participants:0});
+    localStorage.setItem("competitions",JSON.stringify(c));
+    showToast("Competition added");
+    showCompetitions();
+}
+
+function editCompetition(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+    const c=getCompetitions()[index];
+    document.getElementById("content").innerHTML=`
+    <div class="form-box performance-edit-form">
+        <h2>✏️ Edit Competition</h2>
+        <input id="editCompName" value="${c.name}">
+        <input id="editCompCategory" value="${c.category}">
+        <input id="editCompDate" value="${c.date}">
+        <input id="editCompVenue" value="${c.venue}">
+        <select id="editCompStatus">
+            <option ${c.status==="Registration Open"?"selected":""}>Registration Open</option>
+            <option ${c.status==="Coming Soon"?"selected":""}>Coming Soon</option>
+        </select>
+        <div class="edit-actions">
+            <button onclick="saveEditedCompetition(${index})">💾 Save Changes</button>
+            <button onclick="showCompetitions()">↩️ Cancel</button>
+        </div>
+    </div>`;
+}
+
+function saveEditedCompetition(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+    const c=getCompetitions();
+    c[index]={...c[index],
+        name:document.getElementById("editCompName").value.trim(),
+        category:document.getElementById("editCompCategory").value.trim(),
+        date:document.getElementById("editCompDate").value.trim(),
+        venue:document.getElementById("editCompVenue").value.trim(),
+        status:document.getElementById("editCompStatus").value
+    };
+    if(!c[index].name||!c[index].category||!c[index].date||!c[index].venue){showToast("Please fill all details");return}
+    localStorage.setItem("competitions",JSON.stringify(c));
+    showToast("Competition updated");
+    showCompetitions();
+}
+
+function deleteCompetition(index){
+    const c=getCompetitions();
+    if(!confirm(`Delete ${c[index].name}?`))return;
+    c.splice(index,1);
+    localStorage.setItem("competitions",JSON.stringify(c));
+    showToast("Competition deleted");
+    showCompetitions();
+}
+
+
+function getPerformances(){
+    const defaults = [
+        {student:"Priya", song:"Butta Bomma", type:"Western Dance", department:"CSE", date:"September 18, 2026", emoji:"💃"},
+        {student:"Rahul", song:"Samajavaragamana", type:"Classical Fusion", department:"ECE", date:"September 18, 2026", emoji:"🕺"},
+        {student:"Anjali", song:"Vachindamma", type:"Folk Dance", department:"IT", date:"September 19, 2026", emoji:"💃"},
+        {student:"Kiran", song:"Oo Antava", type:"Group Performance", department:"CSE", date:"September 19, 2026", emoji:"🕺"}
+    ];
+    let saved = localStorage.getItem("studentPerformances");
+    if(!saved){
+        localStorage.setItem("studentPerformances", JSON.stringify(defaults));
+        return defaults;
+    }
+    try { return JSON.parse(saved); } catch(e) {
+        localStorage.setItem("studentPerformances", JSON.stringify(defaults));
+        return defaults;
+    }
+}
+
+function showPerformances(){
+    const performances = getPerformances();
+    const likes = JSON.parse(localStorage.getItem("performanceLikes") || "{}");
+
+    document.getElementById("content").innerHTML = `
+    <div class="form-box">
+        <h2>💃 Student Performances</h2>
+        <p style="margin-top:8px;">Explore, add and manage student dance performances.</p>
+
+        <div class="toolbar">
+            <input id="performanceSearch" type="text"
+                placeholder="🔍 Search student or song..."
+                oninput="filterPerformances()">
+            <button onclick="addPerformance()">➕ Add Performance</button>
+        </div>
+
+        <div class="performance-grid" id="performanceGrid">
+            ${performances.map((p,i) => `
+                <div class="performance-card"
+                     data-search="${(p.student+" "+p.song+" "+p.type+" "+p.department).toLowerCase()}">
+                    <div class="performance-media">${p.emoji || "💃"}</div>
+                    <div class="performance-body">
+                        <h3>${p.student}</h3>
+                        <p>🎵 <b>${p.song}</b></p>
+                        <p>🎭 ${p.type}</p>
+                        <p>🏫 ${p.department}</p>
+                        <p>📅 ${p.date}</p>
+                        <span class="performance-tag">Student Performance</span>
+                        <div class="performance-actions">
+                            <button onclick="viewPerformance(${i})">👁️ View</button>
+                            <button class="like-btn ${likes[i] ? "liked" : ""}" onclick="togglePerformanceLike(${i})">
+                                ${likes[i] ? "♥" : "♡"} ${likes[i] || 0}
+                            </button>
+                            <button onclick="editPerformance(${i})">✏️ Edit</button>
+                            <button class="danger-btn" onclick="deletePerformance(${i})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join("")}
+        </div>
+    </div>`;
+}
+
+function addPerformance(){
+    document.getElementById("content").innerHTML = `
+    <div class="form-box performance-edit-form">
+        <h2>➕ Add Student Performance</h2>
+        <input id="newStudent" placeholder="Student name">
+        <input id="newSong" placeholder="Song name">
+        <select id="newType">
+            <option>Western Dance</option>
+            <option>Classical Fusion</option>
+            <option>Folk Dance</option>
+            <option>Group Performance</option>
+            <option>Other</option>
+        </select>
+        <input id="newDepartment" placeholder="Department">
+        <input id="newDate" placeholder="Performance date">
+        <div class="edit-actions">
+            <button onclick="saveNewPerformance()">💾 Add Performance</button>
+            <button onclick="showPerformances()">↩️ Cancel</button>
+        </div>
+    </div>`;
+}
+
+function saveNewPerformance(){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+    const performances = getPerformances();
+    const student = document.getElementById("newStudent").value.trim();
+    const song = document.getElementById("newSong").value.trim();
+    const type = document.getElementById("newType").value;
+    const department = document.getElementById("newDepartment").value.trim();
+    const date = document.getElementById("newDate").value.trim();
+
+    if(!student || !song || !department || !date){
+        showToast("Please fill all performance details");
+        return;
+    }
+
+    performances.push({student,song,type,department,date,emoji:"💃"});
+    localStorage.setItem("studentPerformances", JSON.stringify(performances));
+    localStorage.setItem("lastNotification", `${student}'s performance was added successfully.`);
+    showToast("Performance added successfully");
+    showPerformances();
+}
+
+function viewPerformance(index){
+    const p = getPerformances()[index];
+    document.getElementById("content").innerHTML = `
+    <div class="form-box details-panel">
+        <h2>${p.emoji || "💃"} ${p.student}</h2>
+        <div class="card" style="margin-top:18px;">
+            <h3>🎵 Song</h3><p>${p.song}</p>
+            <h3>🎭 Dance Type</h3><p>${p.type}</p>
+            <h3>🏫 Department</h3><p>${p.department}</p>
+            <h3>📅 Performance Date</h3><p>${p.date}</p>
+            <p class="media-note">🎬 Performance media can be connected here when a photo/video is uploaded.</p>
+        </div>
+        <div class="edit-actions" style="margin-top:16px;">
+            <button onclick="editPerformance(${index})">✏️ Edit</button>
+            <button onclick="showPerformances()">↩️ Back</button>
+        </div>
+    </div>`;
+}
+
+function togglePerformanceLike(index){
+    let likes = JSON.parse(localStorage.getItem("performanceLikes") || "{}");
+    likes[index] = (likes[index] || 0) + 1;
+    localStorage.setItem("performanceLikes", JSON.stringify(likes));
+    showPerformances();
+}
+
+function editPerformance(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+    const p = getPerformances()[index];
+    document.getElementById("content").innerHTML = `
+    <div class="form-box performance-edit-form">
+        <h2>✏️ Edit Student Performance</h2>
+        <input id="editStudent" value="${p.student}" placeholder="Student name">
+        <input id="editSong" value="${p.song}" placeholder="Song name">
+        <select id="editType">
+            <option ${p.type==="Western Dance"?"selected":""}>Western Dance</option>
+            <option ${p.type==="Classical Fusion"?"selected":""}>Classical Fusion</option>
+            <option ${p.type==="Folk Dance"?"selected":""}>Folk Dance</option>
+            <option ${p.type==="Group Performance"?"selected":""}>Group Performance</option>
+            <option ${p.type==="Other"?"selected":""}>Other</option>
+        </select>
+        <input id="editDepartment" value="${p.department}" placeholder="Department">
+        <input id="editDate" value="${p.date}" placeholder="Performance date">
+        <div class="edit-actions">
+            <button onclick="savePerformance(${index})">💾 Save Changes</button>
+            <button onclick="showPerformances()">↩️ Cancel</button>
+        </div>
+    </div>`;
+}
+
+function savePerformance(index){
+if(currentRole!=="Admin"){ alert("Only Admin can make changes."); return; }
+
+    const performances = getPerformances();
+    const student = document.getElementById("editStudent").value.trim();
+    const song = document.getElementById("editSong").value.trim();
+    const department = document.getElementById("editDepartment").value.trim();
+    const date = document.getElementById("editDate").value.trim();
+    const type = document.getElementById("editType").value;
+
+    if(!student || !song || !department || !date){
+        showToast("Please fill all performance details");
+        return;
+    }
+
+    performances[index] = {...performances[index], student, song, type, department, date};
+    localStorage.setItem("studentPerformances", JSON.stringify(performances));
+    localStorage.setItem("lastNotification", `${student}'s performance was updated successfully.`);
+    showToast("Performance updated successfully");
+    showPerformances();
+}
+
+function deletePerformance(index){
+    if(currentRole!=="Admin"){alert("Only Admin can make changes.");return;}
+    const performances = getPerformances();
+    if(!performances[index]) return;
+    const name = performances[index].student;
+    if(!confirm(`Delete ${name}'s performance?`)) return;
+
+    performances.splice(index, 1);
+    localStorage.setItem("studentPerformances", JSON.stringify(performances));
+    showToast("Performance deleted");
+    showPerformances();
+}
+
+function filterPerformances(){
+    let q = (document.getElementById("performanceSearch")?.value || "").toLowerCase();
+    let cards = document.querySelectorAll(".performance-card");
+    let visible = 0;
+
+    cards.forEach(card => {
+        let match = card.dataset.search.includes(q);
+        card.style.display = match ? "" : "none";
+        if(match) visible++;
+    });
+
+    let grid = document.getElementById("performanceGrid");
+    let empty = document.getElementById("performanceEmpty");
+
+    if(visible === 0){
+        if(!empty){
+            empty = document.createElement("div");
+            empty.id = "performanceEmpty";
+            empty.className = "empty-state";
+            empty.innerHTML = "<h3>No performances found</h3><p>Try another student name or song.</p>";
+            grid.parentNode.appendChild(empty);
+        }
+    }else if(empty){
+        empty.remove();
+    }
+}
+
+
+function showAchievements(){
+    const allRegistrations = JSON.parse(localStorage.getItem("registrations") || "[]");
+    // Show this student's registrations and actual completed participation, not a fixed 20% per registration.
+    const registrations = currentRole === "Admin"
+        ? allRegistrations
+        : allRegistrations.filter(reg => reg.registeredBy === currentUsername);
+    const count = registrations.length;
+    const completed = registrations.filter(reg => reg.participationCompleted === true).length;
+    const progress = count ? Math.round((completed / count) * 100) : 0;
+
+    document.getElementById("content").innerHTML = `
+    <div class="form-box">
+        <h2>🏆 My Achievements</h2>
+        <div class="achievement-grid">
+            <div class="achievement"><div class="achievement-icon">🎯</div><h3>Event Explorer</h3><p>${count} event registration(s)</p></div>
+            <div class="achievement"><div class="achievement-icon">⭐</div><h3>Active Student</h3><p>Keep participating in campus activities</p></div>
+            <div class="achievement"><div class="achievement-icon">🤝</div><h3>Community</h3><p>Explore clubs and connect with students</p></div>
+        </div>
+        <div class="card" style="margin-top:20px;">
+            <h3>Participation Progress</h3>
+            <div class="progress-wrap"><div class="progress-bar" style="width:${progress}%"></div></div>
+            <p style="margin-top:8px;">${completed} of ${count} registration(s) completed · ${progress}% complete</p>
+        </div>
+    </div>`;
+}
+
+function showSettings(){
+    document.getElementById("content").innerHTML = `
+    <div class="form-box settings-card">
+        <h2>⚙️ Settings</h2>
+        <div class="setting-row">
+            <div><b>Dark Mode</b><p>Switch between light and dark appearance.</p></div>
+            <div class="toggle" id="settingsThemeToggle" onclick="toggleThemeFromSettings()"></div>
+        </div>
+        <div class="setting-row">
+            <div><b>Notifications</b><p>Show updates about registrations and events.</p></div>
+            <div class="toggle on"></div>
+        </div>
+        <div class="setting-row">
+            <div><b>Profile</b><p>Edit your personal information and DP.</p></div>
+            <button onclick="editProfile()">Edit Profile</button>
+            <button onclick="showChangePassword()">Change Password</button>
+        </div>
+    </div>`;
+    syncThemeToggle();
+}
+
+function toggleThemeFromSettings(){
+    toggleDarkMode();
+    syncThemeToggle();
+}
+
+
+function showProfile(){
+
+    const account=getCurrentAccount() || {};
+    let savedName=localStorage.getItem("profileName") || account.name || currentUsername || "Not available";
+    let savedEmail=localStorage.getItem("profileEmail") || account.email || "";
+    let username=currentUsername || "Not available";
+    let savedPhone=localStorage.getItem("profilePhone") || account.phone || "";
+    let department=account.department || localStorage.getItem("profileDepartment") || "Not specified";
+    let year=account.year || localStorage.getItem("profileYear") || "Not specified";
+
+    document.getElementById("content").innerHTML=`
+
+        <div class="form-box">
+
+            <h2>👤 My Profile</h2>
+
+            <div class="profile-hero">
+                ${
+                    localStorage.getItem("profilePhoto")
+                    ? `<img class="hero-avatar" src="${localStorage.getItem("profilePhoto")}" alt="Profile Photo">`
+                    : `<div class="hero-placeholder">👤</div>`
+                }
+                <div>
+                    <h2 style="margin:0 0 6px;">${savedName}</h2>
+                    <p style="margin:0;">${currentRole} • ${department} • ${year}</p>
+                    <div class="profile-progress">
+                        <small>Profile completion · 80%</small>
+                        <div class="progress-wrap"><div class="progress-bar" style="width:80%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-info-grid">
+
+                <div class="profile-info-item">
+                    <span>Full Name</span>
+                    <strong>${savedName}</strong>
+                </div>
+
+                <div class="profile-info-item">
+                    <span>Username</span>
+                    <strong>${username}</strong>
+                </div>
+
+                <div class="profile-info-item">
+                    <span>Role</span>
+                    <strong>${currentRole}</strong>
+                </div>
+
+                <div class="profile-info-item">
+                    <span>Department</span>
+                    <strong>${department}</strong>
+                </div>
+
+                <div class="profile-info-item">
+                    <span>Year</span>
+                    <strong>${year}</strong>
+                </div>
+
+                <div class="profile-info-item">
+                    <span>Email</span>
+                    <strong>${savedEmail || "Not added"}</strong>
+                </div>
+
+                <div class="profile-info-item">
+                    <span>Phone</span>
+                    <strong>${savedPhone || "Not added"}</strong>
+                </div>
+
+            </div>
+
+            <button onclick="editProfile()">
+                ✏️ Edit Profile
+            </button>
+
+        </div>
+
+    `;
+}
+
+function editProfile(){
+
+    const account=getCurrentAccount() || {};
+    let savedName=localStorage.getItem("profileName") || account.name || currentUsername || "";
+    let savedEmail=localStorage.getItem("profileEmail") || account.email || "";
+
+    document.getElementById("content").innerHTML=`
+
+        <div class="form-box">
+
+            <h2>✏️ Edit Profile</h2>
+
+            <div class="profile-avatar-wrap">
+                ${
+                    localStorage.getItem("profilePhoto")
+                    ? `<img class="profile-avatar" src="${localStorage.getItem("profilePhoto")}" alt="Profile Photo">`
+                    : `<div class="profile-avatar-placeholder">👤</div>`
+                }
+                <input
+                    class="profile-photo-input"
+                    id="profilePhotoInput"
+                    type="file"
+                    accept="image/*"
+                    onchange="previewProfilePhoto(event)"
+                >
+                <p class="profile-photo-note">Choose your DP (JPG/PNG/WebP)</p>
+            </div>
+
+            <label>Full Name</label>
+
+            <input
+                id="profileFullName"
+                value="${savedName}"
+            >
+
+            <label>Email</label>
+
+            <input
+                id="profileEmail"
+                type="email"
+                value="${savedEmail}"
+                placeholder="Enter email"
+            >
+
+            <label>Phone Number</label>
+
+            <input
+                id="profilePhone"
+                type="tel"
+                value="${localStorage.getItem("profilePhone") || ""}"
+                placeholder="Enter phone number"
+            >
+
+            <label>Department</label>
+            <select id="profileDepartment"><option value="">Select Department</option><option>CSE</option><option>ECE</option><option>EEE</option><option>IT</option><option>Civil</option><option>Mechanical</option><option>Other</option></select>
+            <label>Year</label>
+            <select id="profileYear"><option value="">Select Year</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select>
+
+            <br>
+
+            <button onclick="saveProfile()">
+                💾 Save Changes
+            </button>
+
+            <button
+                onclick="showProfile()"
+                style="background:#64748b;"
+            >
+                Back
+            </button>
+
+        </div>
+
+    `;
+    const dept=document.getElementById("profileDepartment");
+    const yr=document.getElementById("profileYear");
+    if(dept) dept.value=localStorage.getItem("profileDepartment") || account.department || "";
+    if(yr) yr.value=localStorage.getItem("profileYear") || account.year || "";
+}
+
+function previewProfilePhoto(event){
+    let file = event.target.files[0];
+
+    if(!file){
+        return;
+    }
+
+    if(!file.type.startsWith("image/")){
+        alert("Please select an image file.");
+        event.target.value = "";
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+        localStorage.setItem("profilePhoto", e.target.result);
+
+        // Refresh the edit page so the selected DP is shown immediately.
+        editProfile();
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function saveProfile(){
+
+    let name =
+        document.getElementById("profileFullName").value.trim();
+
+    let email =
+        document.getElementById("profileEmail").value.trim();
+
+    let phone=document.getElementById("profilePhone").value.trim();
+    let department=document.getElementById("profileDepartment").value;
+    let year=document.getElementById("profileYear").value;
+
+    if(name===""){
+        alert("Please enter your name.");
+        return;
+    }
+
+    if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert("Please enter a valid email address.");return;}
+    if(phone){const digits=phone.replace(/\D/g,"");if(digits.length!==10 && !(digits.length===12 && digits.startsWith("91"))){alert("Please enter a valid phone number.");return;}}
+    localStorage.setItem("profileName",name);
+    localStorage.setItem("profileEmail",email);
+    localStorage.setItem("profilePhone",phone);
+    localStorage.setItem("profileDepartment",department);
+    localStorage.setItem("profileYear",year);
+    const accounts=getAccounts();
+    const key=Object.keys(accounts).find(k=>k.toLowerCase()===String(currentUsername).toLowerCase());
+    if(key){accounts[key].name=name;accounts[key].email=email;accounts[key].phone=phone;accounts[key].department=department;accounts[key].year=year;setAccounts(accounts);}
+
+    alert("Profile updated successfully!");
+
+    showProfile();
+}
+
+getAccounts();
+loadDarkMode();
+
+
+document.addEventListener("DOMContentLoaded", function(){
+    setTimeout(updateActivityChart, 100);
+});
+</script>
+
+
+<style id="responsive-device-layout">
+/* Responsive layout for phones, tablets and laptops */
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; width: 100%; overflow-x: hidden; }
+img, video, canvas, table { max-width: 100%; }
+input, select, textarea, button { max-width: 100%; }
+@media (max-width: 900px) {
+  .dashboard { display: flex; min-height: calc(100vh - 70px); }
+  .sidebar { width: 245px; min-width: 210px; box-sizing: border-box; }
+  .main, .main-content, .content, .dashboard-content { min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card, .stat-card, .panel, .form-container { max-width: 100%; box-sizing: border-box; }
+}
+@media (max-width: 700px) {
+  body { font-size: 15px; }
+  header { padding: 12px 14px; flex-wrap: wrap; gap: 8px; }
+  .dashboard { display: block; width: 100%; }
+  .sidebar { position: fixed; z-index: 1000; top: 0; left: 0; bottom: 0; width: min(82vw, 300px); min-width: 0; height: 100dvh; max-height: 100dvh; overflow-y: auto; transform: translateX(-105%); transition: transform .25s ease; box-shadow: 8px 0 24px rgba(0,0,0,.18); }
+  .sidebar.mobile-open { transform: translateX(0); } 
+
+@media (max-width: 700px) {
+    .sidebar {
+        transition: transform 0.25s ease !important;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0) !important;
+    }
+
+    .sidebar:not(.mobile-open) {
+        transform: translateX(-105%) !important;
+    }
+}
+
+  .main, .main-content, .content, .dashboard-content { width: 100% !important; margin-left: 0 !important; padding: 16px !important; box-sizing: border-box; }
+  .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px; }
+  .dashboard-stats > *, .grid, .cards-grid { min-width: 0; }
+  form { width: 100%; max-width: 100%; box-sizing: border-box; }
+  form input, form select, form textarea { width: 100%; min-width: 0; box-sizing: border-box; }
+  table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; }
+  button, .sidebar button { min-height: 42px; touch-action: manipulation; }
+  h1 { font-size: clamp(1.35rem, 5vw, 2rem); }
+  h2 { font-size: clamp(1.15rem, 4vw, 1.55rem); }
+}
+@media (max-width: 380px) {
+  .dashboard-stats { grid-template-columns: 1fr !important; }
+  .main, .main-content, .content, .dashboard-content { padding: 12px !important; }
+}
+
+.sidebar button:focus{ outline:2px solid #90caf9; }
+.section-subtitle{color:#64748b;margin:-8px 0 18px;}
+</style>
+</head>
+</style>
+
+</body>
+</html>
