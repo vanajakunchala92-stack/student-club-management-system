@@ -6,5 +6,12 @@
   "scripts": {
     "start": "node server.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.14.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "helmet": "^8.0.0",
+    "express-session": "^1.18.1"
+  }
 }
